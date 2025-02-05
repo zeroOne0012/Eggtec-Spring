@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+        >
+
+<mapper namespace="handalab.eggtec.mapper.HistoryMapper">
+    <select id="getHistory" resultType="handalab.eggtec.dto.HistoryDTO">
+        SELECT * FROM history where idx = #{id}
+    </select>
+</mapper>
