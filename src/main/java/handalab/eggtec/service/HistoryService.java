@@ -1,11 +1,13 @@
 package handalab.eggtec.service;
 
 import handalab.eggtec.dto.request.history.HistoryFilterDTO;
-import handalab.eggtec.dto.response.history.FormattedSummaryDTO;
 import handalab.eggtec.dto.response.history.SummaryDTO;
+import handalab.eggtec.dto.response.history.LastDTO;
+import handalab.eggtec.dto.response.history.TotalSummaryDTO;
 import handalab.eggtec.mapper.HistoryMapper;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,16 +21,24 @@ public class HistoryService {
     }
 
 
-    public List<SummaryDTO> totalSummary() {
+    public List<TotalSummaryDTO> totalSummary() {
         return historyMapper.getTotalSummary();
     }
 
 
-    public List<FormattedSummaryDTO> summaryByDate(Integer id, HistoryFilterDTO filter) {
+    public List<SummaryDTO> summaryByDate(Integer id, HistoryFilterDTO filter) {
         List<SummaryDTO> result = historyMapper.getSummary(id, filter);
 
         return result.stream()
-                .map(dto-> new FormattedSummaryDTO(dto, LocalDate.now().toString()))
+                .peek(dto-> dto.setDate(dto.getDate().split("T")[0]))
+                .collect(Collectors.toList());
+    }
+
+    public List<LastDTO> last() {
+        List<LastDTO> result = historyMapper.getLast();
+
+        return result.stream()
+                .peek(dto -> dto.setLastDate(dto.getLastDate().split("T")[0]))
                 .collect(Collectors.toList());
     }
 }
