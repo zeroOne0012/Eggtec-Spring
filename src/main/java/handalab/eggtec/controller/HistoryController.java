@@ -1,12 +1,12 @@
 package handalab.eggtec.controller;
 
+import handalab.eggtec.dto.request.history.HistoryFilterDTO;
+import handalab.eggtec.dto.response.history.FormattedSummaryDTO;
 import handalab.eggtec.dto.response.history.SummaryDTO;
 import handalab.eggtec.service.HistoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,13 +21,20 @@ public class HistoryController {
     }
 
     @GetMapping("/summary")
-    public ResponseEntity<List<SummaryDTO>> getSummary() {
-        List<SummaryDTO> result = historyService.summary();
+    public ResponseEntity<List<SummaryDTO>> getTotalSummary() {
+        List<SummaryDTO> result = historyService.totalSummary();
 
         if (result.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); // .build() 의미?
         }
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @PostMapping("/summary/{id}")
+    public ResponseEntity<List<FormattedSummaryDTO>> getSummary(@PathVariable(name="id") Integer id, @RequestBody HistoryFilterDTO filter) {
+        List<FormattedSummaryDTO> result = historyService.summaryByDate(id, filter);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
 }
