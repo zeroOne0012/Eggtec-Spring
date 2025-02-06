@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+        >
+
+<mapper namespace="handalab.eggtec.mapper.HistoryMapper">
+    <select id="getSummary" resultType="handalab.eggtec.dto.response.history.SummaryDTO">
+        WITH latest_dates AS (
+            SELECT
+                recipe_no,
+                MAX(created_t::date) AS latest_date
+            FROM
+                history
+            GROUP BY
+                recipe_no
+        ),
+             latest_data AS (
+                 SELECT
+                     h.*
+                 FROM
+                     history h
+                         INNER JOIN
+                     latest_dates ld
+                     ON
+                         h.recipe_no = ld.recipe_no
+                             AND h.created_t::date = ld.latest_date
+            ),
+            result_stats AS (
+        SELECT
+            recipe_no,
+            ROUND(
+            (SUM(CASE WHEN lane1 != 0 THEN 1 ELSE 0 END +
+            CASE WHEN lane2 != 0 THEN 1 ELSE 0 END +
+            CASE WHEN lane3 != 0 THEN 1 ELSE 0 END +
+            CASE WHEN lane4 != 0 THEN 1 ELSE 0 END +
+            CASE WHEN lane5 != 0 THEN 1 ELSE 0 END +
+            CASE WHEN lane6 != 0 THEN 1 ELSE 0 END)::decimal
+            / NULLIF(COUNT(*), 0)) / 6 * 100, 2
+            ) AS ng_percentage
+        FROM
+            latest_data
+        GROUP BY
+            recipe_no
+            )
+        SELECT
+            r.idx AS recipe_no,  -- recipe_no 대신 idx 사용
+            r.nickname,
+            r.type,
+            r.weight,
+            COALESCE(rs.ng_percentage, 0) AS ng_percentage
+        FROM
+            recipe r
+                LEFT JOIN
+            result_stats rs
+            ON
+                r.idx = rs.recipe_no
+        ORDER BY
+            recipe_no;
+    </select>
+</mapper>

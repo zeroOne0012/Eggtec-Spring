@@ -1,13 +1,9 @@
-package handalab.eggtec.dto;
+package handalab.eggtec.dto.response.history;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class HistoryDTO {
     private Long idx;          // SERIAL (자동 증가 ID)
     private Integer recipeNo;  // FOREIGN KEY (recipe 테이블 참조)
