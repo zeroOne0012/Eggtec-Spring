@@ -61,7 +61,7 @@
             recipe_no;
     </select>
 
-    <select id="getSummary" resultType="handalab.eggtec.dto.response.history.TotalSummaryDTO">
+    <select id="getSummary" resultType="handalab.eggtec.dto.response.history.SummaryDTO">
         SELECT
             recipe_no,
             created_t::date AS date,
@@ -155,4 +155,54 @@
         ORDER BY
             recipe_no;
     </select>
+
+
+    <select id = "getTotal" resultType="handalab.eggtec.dto.response.history.TotalDTO">
+        SELECT
+            r.idx AS recipe_no,
+            COALESCE(SUM(CASE WHEN h.lane1 != 0 THEN 1 ELSE 0 END +
+                         CASE WHEN h.lane2 != 0 THEN 1 ELSE 0 END +
+                         CASE WHEN h.lane3 != 0 THEN 1 ELSE 0 END +
+                         CASE WHEN h.lane4 != 0 THEN 1 ELSE 0 END +
+                         CASE WHEN h.lane5 != 0 THEN 1 ELSE 0 END +
+                         CASE WHEN h.lane6 != 0 THEN 1 ELSE 0 END), 0) AS ng_total_count
+        FROM
+                (SELECT DISTINCT idx FROM recipe) r
+                    LEFT JOIN
+            history h
+            ON r.idx = h.recipe_no
+        GROUP BY
+            r.idx
+        ORDER BY
+            r.idx;
+    </select>
+
+    <select id="getCsvData" resultType="handalab.eggtec.dto.response.history.CsvDTO">
+
+
+        SELECT
+        recipe_no,
+        created_t::date AS date,
+        COALESCE(SUM(CASE WHEN lane1 != 0 THEN 1 ELSE 0 END +
+        CASE WHEN lane2 != 0 THEN 1 ELSE 0 END +
+        CASE WHEN lane3 != 0 THEN 1 ELSE 0 END +
+        CASE WHEN lane4 != 0 THEN 1 ELSE 0 END +
+        CASE WHEN lane5 != 0 THEN 1 ELSE 0 END +
+        CASE WHEN lane6 != 0 THEN 1 ELSE 0 END), 0) AS ng_count
+        FROM
+        history
+
+        <where>
+            recipe_no = #{id}
+            <if test="filter.startDate!=null and filter.endDate!=null">
+                AND created_t::date BETWEEN #{filter.startDate}::date + INTERVAL '1 day' AND #{filter.endDate}::date + INTERVAL '1 day'
+            </if>
+        </where>
+        GROUP BY
+        recipe_no, created_t::date
+        ORDER BY
+        date;
+
+    </select>
+
 </mapper>
