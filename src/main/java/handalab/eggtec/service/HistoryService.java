@@ -60,20 +60,14 @@ public class HistoryService {
         return result;
     }
 
-//    private void csvFileOut(){
-//
-//    }
-
-
     private String mkdir(String csvPath) throws IOException {
         // path
-        String totalPath = Paths.get("").toAbsolutePath().toString() + File.separator + csvPath + File.separator;
+        String totalPath = Paths.get("").toAbsolutePath().toString() + File.separator + "csv" + File.separator + csvPath + File.separator;
         Path directoryPath = Paths.get(totalPath);
 
         // mkdir
         try {
             Files.createDirectories(directoryPath); // 디렉터리가 없으면 생성
-//            log.info("디렉터리 생성됨: " + directoryPath);
         } catch (IOException e) {
             log.info(e.getMessage());
             throw new IOException(e); // 디렉터리 생성 실패 시 종료
@@ -94,9 +88,6 @@ public class HistoryService {
 
     public MessageDTO createCsv(Integer id, CsvFilterDTO info) throws IOException {
         List<CsvDTO> csvDTO = historyMapper.getCsvData(id, info); // query execution
-
-//        log.info(info.toString());
-//        log.info(csvDTO.toString());
 
         // mkdir
         String csvPath = info.getPath() + "csv";
@@ -132,6 +123,8 @@ public class HistoryService {
             throw new IOException(e);
         }
 
-        return new MessageDTO(csvFile.toString());
+        String separatorRegex = File.separator.equals("\\") ? "\\\\" : File.separator;
+        String[] fileNameParts = csvFile.toString().split(separatorRegex);
+        return new MessageDTO(fileNameParts[fileNameParts.length - 2] + File.separator + fileNameParts[fileNameParts.length - 1]);
     }
 }
