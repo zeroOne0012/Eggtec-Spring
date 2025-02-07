@@ -23,7 +23,11 @@ public class RecipeController {
         return ResponseEntity.ok(result);
     }
 
-
+    @GetMapping("/model")
+    public ResponseEntity<List<String>> getModels() {
+        List<String> result = recipeService.getModels();
+        return ResponseEntity.ok(result);
+    }
 
 
 }

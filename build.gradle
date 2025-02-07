@@ -43,7 +43,9 @@ dependencies {
 
 	// localDate for csv
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.7.3'
-//	compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.7.3'
+
+	// dot-env
+	implementation 'io.github.cdimascio:dotenv-java:3.0.0'
 
 }
 
