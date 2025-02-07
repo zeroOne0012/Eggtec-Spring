@@ -43,4 +43,12 @@ public class RecipeController {
                 :ResponseEntity.badRequest().body(new MessageDTO("Failed to create recipe"));
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<RecipeDTO> updateRecipe(@PathVariable(name="id") Integer id, @RequestBody RecipeDTO recipeDTO) {
+        RecipeDTO result = recipeService.updateRecipe(id, recipeDTO);
+        return result!=null
+                ?ResponseEntity.ok(result)
+                :ResponseEntity.notFound().build();
+    }
+
 }

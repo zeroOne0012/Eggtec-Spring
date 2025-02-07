@@ -43,4 +43,8 @@ public class RecipeService {
     public RecipeDTO postRecipe(RecipeDTO recipeDTO) {
         return recipeMapper.postRecipe(recipeDTO);
     }
+
+    public RecipeDTO updateRecipe(Integer id, RecipeDTO recipeDTO) {
+        return recipeMapper.updateRecipe(id, recipeDTO);
+    }
 }

@@ -13,4 +13,6 @@ public interface RecipeMapper {
     RecipeDTO getRecipe(Integer id);
 
     RecipeDTO postRecipe(@Param("recipe") RecipeDTO recipeDTO);
+
+    RecipeDTO updateRecipe(@Param("id")Integer id,@Param("r") RecipeDTO recipeDTO);
 }

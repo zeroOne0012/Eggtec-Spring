@@ -22,6 +22,19 @@
             RETURNING *;
     </select>
 
+    <select id = "updateRecipe" resultType = "handalab.eggtec.dto.response.recipe.RecipeDTO">
+        UPDATE recipe
+        <set>
+            <if test = "r.idx != null">idx = #{r.idx},</if>
+            <if test = "r.nickname != null">nickname = #{r.nickname},</if>
+            <if test = "r.type != null">type = #{r.type},</if>
+            <if test = "r.weight != null">weight = #{r.weight},</if>
+            <if test = "r.selected != null">selected = #{r.selected},</if>
+        </set>
+        where idx = #{id}
+        RETURNING *;
+    </select>
+
 
 
 </mapper>
