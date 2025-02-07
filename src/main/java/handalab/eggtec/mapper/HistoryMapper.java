@@ -24,5 +24,5 @@ public interface HistoryMapper {
 
     List<CsvDTO> getCsvData(@Param("id") Integer id, @Param("filter") CsvFilterDTO info);
 
-    Integer postHistory(@Param("history")HistoryPostDTO history);
+    HistoryPostDTO postHistory(@Param("history")HistoryPostDTO history);
 }

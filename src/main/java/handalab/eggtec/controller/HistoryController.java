@@ -59,8 +59,8 @@ public class HistoryController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Integer> createHistory(@RequestBody HistoryPostDTO history) {
-        Integer result = historyService.createHistory(history);
+    public ResponseEntity<HistoryPostDTO> createHistory(@RequestBody HistoryPostDTO history) {
+        HistoryPostDTO result = historyService.createHistory(history);
         return result!=null ? ResponseEntity.status(HttpStatus.CREATED).body(result) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 
     }

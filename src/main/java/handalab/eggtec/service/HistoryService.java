@@ -129,9 +129,9 @@ public class HistoryService {
         return new MessageDTO(fileNameParts[fileNameParts.length - 2] + File.separator + fileNameParts[fileNameParts.length - 1]);
     }
 
-    public Integer createHistory(HistoryPostDTO history) {
-        Integer result = historyMapper.postHistory(history);
-//        log.info(result.toString());
+    public HistoryPostDTO createHistory(HistoryPostDTO history) {
+        HistoryPostDTO result = historyMapper.postHistory(history);
+        log.info(result.toString());
         return result;
     }
 }

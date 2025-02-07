@@ -1,14 +1,19 @@
 package handalab.eggtec.dto.request.history;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import reactor.util.annotation.Nullable;
 
 import java.time.LocalDate;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)  // null 값이면 JSON에서 제외
 public class HistoryPostDTO {
+//    @Nullable
+    private Integer idx;
+
     @JsonProperty("recipe_no")
     private Integer recipeNo;
 
@@ -22,5 +27,6 @@ public class HistoryPostDTO {
     @JsonProperty("item_no")
     private Long itemNo;
     @JsonProperty("created_t")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate createdT;
 }
