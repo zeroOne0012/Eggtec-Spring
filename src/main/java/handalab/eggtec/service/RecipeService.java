@@ -47,4 +47,8 @@ public class RecipeService {
     public RecipeDTO updateRecipe(Integer id, RecipeDTO recipeDTO) {
         return recipeMapper.updateRecipe(id, recipeDTO);
     }
+
+    public RecipeDTO deleteRecipe(Integer id) {
+        return recipeMapper.deleteRecipe(id);
+    }
 }

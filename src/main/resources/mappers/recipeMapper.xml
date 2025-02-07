@@ -35,6 +35,10 @@
         RETURNING *;
     </select>
 
+    <select id = "deleteRecipe" resultType="handalab.eggtec.dto.response.recipe.RecipeDTO">
+        DELETE FROM recipe WHERE idx = #{id} RETURNING *
+    </select>
+
 
 
 </mapper>

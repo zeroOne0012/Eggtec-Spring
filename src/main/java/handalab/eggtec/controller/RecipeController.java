@@ -51,4 +51,12 @@ public class RecipeController {
                 :ResponseEntity.notFound().build();
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MessageDTO> deleteRecipe(@PathVariable(name="id") Integer id) {
+        RecipeDTO result = recipeService.deleteRecipe(id);
+        return result!=null
+                ?ResponseEntity.status(HttpStatus.OK).body(new MessageDTO("Recipe deleted successfully", "deletedRecipe", result))
+                :ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageDTO("Failed to delete recipe"));
+    }
+
 }
