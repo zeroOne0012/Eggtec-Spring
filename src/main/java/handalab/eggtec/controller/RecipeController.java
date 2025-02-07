@@ -1,11 +1,11 @@
 package handalab.eggtec.controller;
 
+import handalab.eggtec.dto.MessageDTO;
 import handalab.eggtec.dto.response.recipe.RecipeDTO;
 import handalab.eggtec.service.RecipeService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,5 +29,18 @@ public class RecipeController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<RecipeDTO> getRecipe(@PathVariable(name="id") Integer id) {
+        RecipeDTO result = recipeService.getRecipe(id);
+        return result!=null?ResponseEntity.ok(result):ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<MessageDTO> createRecipe(@RequestBody RecipeDTO recipeDTO) {
+        RecipeDTO result = recipeService.postRecipe(recipeDTO);
+        return result!=null
+                ? ResponseEntity.status(HttpStatus.CREATED).body(new MessageDTO("Recipe created successfully", "recipe", result))
+                :ResponseEntity.badRequest().body(new MessageDTO("Failed to create recipe"));
+    }
 
 }

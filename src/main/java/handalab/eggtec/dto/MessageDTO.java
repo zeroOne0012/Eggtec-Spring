@@ -22,6 +22,12 @@ public class MessageDTO { // csv
         this.message = message;
     }
 
+    public MessageDTO(String message, String key, Object value) {
+        this.message = message;
+        this.dynamicFields = new HashMap<>();
+        this.dynamicFields.put(key, value);
+    }
+
     @JsonAnyGetter // Map의 키를 JSON 속성으로 변환
     public Map<String, Object> getDynamicFields() {
         return dynamicFields;

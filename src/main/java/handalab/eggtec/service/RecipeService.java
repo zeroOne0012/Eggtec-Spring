@@ -20,7 +20,7 @@ public class RecipeService {
         this.recipeMapper = recipeMapper;
     }
     public List<RecipeDTO> getAllRecipes() {
-        return recipeMapper.getRecipe();
+        return recipeMapper.getAllRecipes();
     }
 
     public List<String> getModels() {
@@ -33,5 +33,14 @@ public class RecipeService {
         String[] files = dir.list();
 
         return Arrays.asList(Objects.requireNonNull(files));
+    }
+
+
+    public RecipeDTO getRecipe(Integer id) {
+        return recipeMapper.getRecipe(id);
+    }
+
+    public RecipeDTO postRecipe(RecipeDTO recipeDTO) {
+        return recipeMapper.postRecipe(recipeDTO);
     }
 }

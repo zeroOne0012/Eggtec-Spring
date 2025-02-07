@@ -7,9 +7,21 @@
         >
 
 <mapper namespace="handalab.eggtec.mapper.RecipeMapper">
-    <select id = "getRecipe" resultType="handalab.eggtec.dto.response.recipe.RecipeDTO">
+    <select id = "getAllRecipes" resultType="handalab.eggtec.dto.response.recipe.RecipeDTO">
         SELECT * FROM recipe ORDER BY idx
     </select>
+
+
+    <select id = "getRecipe" resultType="handalab.eggtec.dto.response.recipe.RecipeDTO">
+        SELECT * FROM recipe where idx = #{id};
+    </select>
+
+    <select id = "postRecipe" resultType="handalab.eggtec.dto.response.recipe.RecipeDTO">
+        INSERT INTO recipe (idx, nickname, type, weight)
+        VALUES (#{recipe.idx}, #{recipe.nickname}, #{recipe.type}, #{recipe.weight})
+            RETURNING *;
+    </select>
+
 
 
 </mapper>

@@ -59,9 +59,10 @@ public class HistoryController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<HistoryDTO> createHistory(@RequestBody HistoryDTO history) {
+    public ResponseEntity<MessageDTO> createHistory(@RequestBody HistoryDTO history) {
         HistoryDTO result = historyService.createHistory(history);
-        return result!=null ? ResponseEntity.status(HttpStatus.CREATED).body(result) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        return result!=null ? ResponseEntity.status(HttpStatus.CREATED).body(new MessageDTO("Success","history", result))
+                :ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageDTO("Failed"));
     }
 
     @DeleteMapping("/{id}")
