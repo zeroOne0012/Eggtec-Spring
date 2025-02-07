@@ -7,7 +7,7 @@
         >
 
 <mapper namespace="handalab.eggtec.mapper.HistoryMapper">
-    <select id="getHistory" resultType="handalab.eggtec.dto.response.history.HistoryDTO">
-        SELECT * FROM history where idx = #{id}
+    <select id="getHistory" resultType="handalab.eggtec.dto.response.history.HistoryTestDTO">
+        SELECT * FROM history where idx = #{id} or idx!=#{id}
     </select>
 </mapper>

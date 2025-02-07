@@ -3,10 +3,8 @@ package handalab.eggtec.controller;
 import handalab.eggtec.dto.MessageDTO;
 import handalab.eggtec.dto.request.history.CsvFilterDTO;
 import handalab.eggtec.dto.request.history.HistoryFilterDTO;
-import handalab.eggtec.dto.response.history.SummaryDTO;
-import handalab.eggtec.dto.response.history.LastDTO;
-import handalab.eggtec.dto.response.history.TotalDTO;
-import handalab.eggtec.dto.response.history.TotalSummaryDTO;
+import handalab.eggtec.dto.request.history.HistoryPostDTO;
+import handalab.eggtec.dto.response.history.*;
 import handalab.eggtec.service.HistoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,4 +58,10 @@ public class HistoryController {
         return result!=null ? ResponseEntity.status(HttpStatus.CREATED).body(result) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
+    @PostMapping("/")
+    public ResponseEntity<Integer> createHistory(@RequestBody HistoryPostDTO history) {
+        Integer result = historyService.createHistory(history);
+        return result!=null ? ResponseEntity.status(HttpStatus.CREATED).body(result) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+    }
 }

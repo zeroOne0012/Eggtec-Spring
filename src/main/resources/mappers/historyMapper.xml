@@ -178,8 +178,6 @@
     </select>
 
     <select id="getCsvData" resultType="handalab.eggtec.dto.response.history.CsvDTO">
-
-
         SELECT
         recipe_no,
         created_t::date AS date,
@@ -204,5 +202,11 @@
         date;
 
     </select>
+
+    <insert id="postHistory"> --useGeneratedKeys="true" keyProperty="idx"
+        INSERT INTO history(recipe_no, item_no, lane1, lane2, lane3, lane4, lane5, lane6, created_t)
+        VALUES (#{history.recipeNo}, #{history.itemNo}, #{history.lane1}, #{history.lane2}, #{history.lane3}, #{history.lane4}, #{history.lane5}, #{history.lane6}, #{history.createdT})
+            ;
+    </insert>
 
 </mapper>

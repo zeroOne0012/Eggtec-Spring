@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import handalab.eggtec.dto.MessageDTO;
 import handalab.eggtec.dto.request.history.CsvFilterDTO;
 import handalab.eggtec.dto.request.history.HistoryFilterDTO;
+import handalab.eggtec.dto.request.history.HistoryPostDTO;
 import handalab.eggtec.dto.response.history.*;
 import handalab.eggtec.mapper.HistoryMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -126,5 +127,11 @@ public class HistoryService {
         String separatorRegex = File.separator.equals("\\") ? "\\\\" : File.separator;
         String[] fileNameParts = csvFile.toString().split(separatorRegex);
         return new MessageDTO(fileNameParts[fileNameParts.length - 2] + File.separator + fileNameParts[fileNameParts.length - 1]);
+    }
+
+    public Integer createHistory(HistoryPostDTO history) {
+        Integer result = historyMapper.postHistory(history);
+//        log.info(result.toString());
+        return result;
     }
 }
