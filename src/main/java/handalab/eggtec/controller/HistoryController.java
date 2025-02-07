@@ -3,7 +3,7 @@ package handalab.eggtec.controller;
 import handalab.eggtec.dto.MessageDTO;
 import handalab.eggtec.dto.request.history.CsvFilterDTO;
 import handalab.eggtec.dto.request.history.HistoryFilterDTO;
-import handalab.eggtec.dto.request.history.HistoryPostDTO;
+import handalab.eggtec.dto.response.history.HistoryDTO;
 import handalab.eggtec.dto.response.history.*;
 import handalab.eggtec.service.HistoryService;
 import org.springframework.http.HttpStatus;
@@ -59,9 +59,15 @@ public class HistoryController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<HistoryPostDTO> createHistory(@RequestBody HistoryPostDTO history) {
-        HistoryPostDTO result = historyService.createHistory(history);
+    public ResponseEntity<HistoryDTO> createHistory(@RequestBody HistoryDTO history) {
+        HistoryDTO result = historyService.createHistory(history);
         return result!=null ? ResponseEntity.status(HttpStatus.CREATED).body(result) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MessageDTO> deleteHistory(@PathVariable(name="id") Integer id) {
+        MessageDTO result = historyService.deleteHistory(id);
+        return result!=null ?ResponseEntity.status(HttpStatus.OK).body(result)
+                : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageDTO("Failed to delete history"));
     }
 }

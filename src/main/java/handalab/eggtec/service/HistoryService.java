@@ -7,7 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import handalab.eggtec.dto.MessageDTO;
 import handalab.eggtec.dto.request.history.CsvFilterDTO;
 import handalab.eggtec.dto.request.history.HistoryFilterDTO;
-import handalab.eggtec.dto.request.history.HistoryPostDTO;
+import handalab.eggtec.dto.response.history.HistoryDTO;
 import handalab.eggtec.dto.response.history.*;
 import handalab.eggtec.mapper.HistoryMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -120,7 +121,7 @@ public class HistoryService {
                 writer.writeValues(outputStreamWriter).writeAll(csvDTO); // query 결과
             }
         } catch (IOException e) {
-            log.info(e.getMessage());
+//            log.info(e.getMessage());
             throw new IOException(e);
         }
 
@@ -129,9 +130,21 @@ public class HistoryService {
         return new MessageDTO(fileNameParts[fileNameParts.length - 2] + File.separator + fileNameParts[fileNameParts.length - 1]);
     }
 
-    public HistoryPostDTO createHistory(HistoryPostDTO history) {
-        HistoryPostDTO result = historyMapper.postHistory(history);
-        log.info(result.toString());
+    public HistoryDTO createHistory(HistoryDTO history) {
+        HistoryDTO result = historyMapper.postHistory(history);
+//        log.info(result.toString());
         return result;
+    }
+
+    public MessageDTO deleteHistory(Integer id) {
+        HistoryDTO result = historyMapper.deleteHistory(id);
+        if (result!=null) {
+            MessageDTO messageDTO = new MessageDTO("Success", new HashMap<>());
+            messageDTO.getDynamicFields().put("deletedHistory", result);
+
+            return messageDTO;
+        } else{
+            return null;
+        }
     }
 }

@@ -2,7 +2,7 @@ package handalab.eggtec.mapper;
 
 import handalab.eggtec.dto.request.history.CsvFilterDTO;
 import handalab.eggtec.dto.request.history.HistoryFilterDTO;
-import handalab.eggtec.dto.request.history.HistoryPostDTO;
+import handalab.eggtec.dto.response.history.HistoryDTO;
 import handalab.eggtec.dto.response.history.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -24,5 +24,7 @@ public interface HistoryMapper {
 
     List<CsvDTO> getCsvData(@Param("id") Integer id, @Param("filter") CsvFilterDTO info);
 
-    HistoryPostDTO postHistory(@Param("history")HistoryPostDTO history);
+    HistoryDTO postHistory(@Param("history") HistoryDTO history);
+
+    HistoryDTO deleteHistory(Integer id);
 }
