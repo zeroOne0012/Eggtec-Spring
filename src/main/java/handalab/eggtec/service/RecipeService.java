@@ -14,7 +14,7 @@ import java.util.Objects;
 @Service
 @Transactional
 public class RecipeService {
-    @Value("${NET_DIR}")
+    @Value("${NET_DIR}") // NET_DIR = C:\\\\Users\\\\handalab\\\\Desktop\\\\netnet
     private String netDir;
 
     private final RecipeMapper recipeMapper;

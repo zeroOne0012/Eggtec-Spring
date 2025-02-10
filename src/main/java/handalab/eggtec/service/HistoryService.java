@@ -71,10 +71,10 @@ public class HistoryService {
 
         // mkdir
         try {
-            Files.createDirectories(directoryPath); // 디렉터리가 없으면 생성
+            Files.createDirectories(directoryPath); // create dir if not exists
         } catch (IOException e) {
             log.info(e.getMessage());
-            throw new IOException(e); // 디렉터리 생성 실패 시 종료
+            throw new IOException(e); // fail mkdir
         }
         return totalPath;
     }
