@@ -12,6 +12,7 @@ import handalab.eggtec.dto.response.history.*;
 import handalab.eggtec.mapper.HistoryMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 //transactional, autowired
 @Service
 @Slf4j
+@Transactional
 public class HistoryService {
     private final HistoryMapper historyMapper;
     public HistoryService(HistoryMapper historyMapper) {

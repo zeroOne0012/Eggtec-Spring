@@ -4,6 +4,7 @@ import handalab.eggtec.dto.response.recipe.RecipeDTO;
 import handalab.eggtec.mapper.RecipeMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.util.Arrays;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@Transactional
 public class RecipeService {
     @Value("${NET_DIR}")
     private String netDir;
