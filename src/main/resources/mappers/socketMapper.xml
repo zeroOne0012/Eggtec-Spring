@@ -8,8 +8,113 @@
 
 <mapper namespace="handalab.eggtec.mapper.SocketMapper">
 
-
     <select id="getIntervalData" resultType="handalab.eggtec.dto.socketio.IntervalDTO">
+
+        (
+            SELECT
+                0 AS lane_no,
+                COALESCE(
+                        SUM(
+                                (CASE WHEN lane1 = 1 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane2 = 1 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane3 = 1 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane4 = 1 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane5 = 1 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane6 = 1 THEN 1 ELSE 0 END)
+                        ), 0
+                ) AS ng_count_today,
+                COALESCE(
+                        SUM(
+                                (CASE WHEN lane1 = 0 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane2 = 0 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane3 = 0 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane4 = 0 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane5 = 0 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane6 = 0 THEN 1 ELSE 0 END)
+                        ), 0
+                ) AS ok_count_today,
+                COALESCE(
+                        SUM(
+                                (CASE WHEN lane1 = 1 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane2 = 1 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane3 = 1 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane4 = 1 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane5 = 1 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane6 = 1 THEN 1 ELSE 0 END)
+                        ), 0
+                ) +
+                COALESCE(
+                        SUM(
+                                (CASE WHEN lane1 = 0 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane2 = 0 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane3 = 0 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane4 = 0 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane5 = 0 THEN 1 ELSE 0 END) +
+                                (CASE WHEN lane6 = 0 THEN 1 ELSE 0 END)
+                        ), 0
+                ) AS total
+            FROM
+                history
+            WHERE
+                DATE(created_t) = CURRENT_DATE
+)
+UNION ALL
+(
+    SELECT 1 AS lane_no,
+           COALESCE(SUM(CASE WHEN lane1 = 1 THEN 1 ELSE 0 END), 0) AS ng_count_today,
+           COALESCE(SUM(CASE WHEN lane1 = 0 THEN 1 ELSE 0 END), 0) AS ok_count_today,
+           COALESCE(SUM(CASE WHEN lane1 = 1 THEN 1 ELSE 0 END)+SUM(CASE WHEN lane1 = 0 THEN 1 ELSE 0 END), 0) AS total
+    FROM history WHERE DATE(created_t) = CURRENT_DATE
+
+    UNION ALL
+
+    SELECT 2 AS lane_no,
+           COALESCE(SUM(CASE WHEN lane2 = 1 THEN 1 ELSE 0 END), 0) AS ng_count_today,
+           COALESCE(SUM(CASE WHEN lane2 = 0 THEN 1 ELSE 0 END), 0) AS ok_count_today,
+           COALESCE(SUM(CASE WHEN lane2 = 1 THEN 1 ELSE 0 END)+SUM(CASE WHEN lane2 = 0 THEN 1 ELSE 0 END), 0) AS total
+    FROM history WHERE DATE(created_t) = CURRENT_DATE
+
+    UNION ALL
+
+    SELECT 3 AS lane_no,
+           COALESCE(SUM(CASE WHEN lane3 = 1 THEN 1 ELSE 0 END), 0) AS ng_count_today,
+           COALESCE(SUM(CASE WHEN lane3 = 0 THEN 1 ELSE 0 END), 0) AS ok_count_today,
+           COALESCE(SUM(CASE WHEN lane3 = 1 THEN 1 ELSE 0 END)+SUM(CASE WHEN lane3 = 0 THEN 1 ELSE 0 END), 0) AS total
+    FROM history WHERE DATE(created_t) = CURRENT_DATE
+
+    UNION ALL
+
+    SELECT 4 AS lane_no,
+           COALESCE(SUM(CASE WHEN lane4 = 1 THEN 1 ELSE 0 END), 0) AS ng_count_today,
+           COALESCE(SUM(CASE WHEN lane4 = 0 THEN 1 ELSE 0 END), 0) AS ok_count_today,
+           COALESCE(SUM(CASE WHEN lane4 = 1 THEN 1 ELSE 0 END)+SUM(CASE WHEN lane4 = 0 THEN 1 ELSE 0 END), 0) AS total
+    FROM history WHERE DATE(created_t) = CURRENT_DATE
+
+    UNION ALL
+
+    SELECT 5 AS lane_no,
+           COALESCE(SUM(CASE WHEN lane5 = 1 THEN 1 ELSE 0 END), 0) AS ng_count_today,
+           COALESCE(SUM(CASE WHEN lane5 = 0 THEN 1 ELSE 0 END), 0) AS ok_count_today,
+           COALESCE(SUM(CASE WHEN lane5 = 1 THEN 1 ELSE 0 END)+SUM(CASE WHEN lane5 = 0 THEN 1 ELSE 0 END), 0) AS total
+    FROM history WHERE DATE(created_t) = CURRENT_DATE
+
+    UNION ALL
+
+    SELECT 6 AS lane_no,
+           COALESCE(SUM(CASE WHEN lane6 = 1 THEN 1 ELSE 0 END), 0) AS ng_count_today,
+           COALESCE(SUM(CASE WHEN lane6 = 0 THEN 1 ELSE 0 END), 0) AS ok_count_today,
+           COALESCE(SUM(CASE WHEN lane6 = 1 THEN 1 ELSE 0 END)+SUM(CASE WHEN lane6 = 0 THEN 1 ELSE 0 END), 0) AS total
+    FROM history WHERE DATE(created_t) = CURRENT_DATE
+);
+
+
+    </select>
+
+
+
+</mapper>
+
+<!--
         (
             SELECT
                 0 AS lane_no,
@@ -106,10 +211,4 @@
                    COUNT(*) AS total
             FROM history WHERE DATE(created_t) = CURRENT_DATE
         );
-    </select>
-
-
-
-
-
-</mapper>
+-->

@@ -56,6 +56,7 @@ public class IntervalService {
 
     private void executeTask() {
         List<IntervalDTO> intervalDTO = socketMapper.getIntervalData();
+        intervalDTO.getFirst().setLaneNo("all_total");
         socketIOServers.get(intervalPort).getBroadcastOperations().sendEvent("message", intervalDTO);
     }
 

@@ -45,6 +45,11 @@ public class HistoryController {
         List<LastDTO> result = historyService.last();
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+//    @GetMapping("/last")
+//    public ResponseEntity<List<LastResponseDTO>> getLast(){
+//        List<LastResponseDTO> result = historyService.last();
+//        return ResponseEntity.status(HttpStatus.OK).body(result);
+//    }
 
     @GetMapping("/total")
     public ResponseEntity<List<TotalDTO>> getTotal(){
@@ -61,14 +66,14 @@ public class HistoryController {
     @PostMapping("/")
     public ResponseEntity<MessageDTO> createHistory(@RequestBody HistoryDTO history) {
         HistoryDTO result = historyService.createHistory(history);
-        return result!=null ? ResponseEntity.status(HttpStatus.CREATED).body(new MessageDTO("Success","history", result))
+        return result!=null ? ResponseEntity.status(HttpStatus.CREATED).body(new MessageDTO("history 등록 성공","history", result))
                 :ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageDTO("Failed"));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageDTO> deleteHistory(@PathVariable(name="id") Integer id) {
-        MessageDTO result = historyService.deleteHistory(id);
-        return result!=null ?ResponseEntity.status(HttpStatus.OK).body(result)
+        HistoryDTO result = historyService.deleteHistory(id);
+        return result!=null ?ResponseEntity.status(HttpStatus.OK).body(new MessageDTO("history 삭제 성공","deletedHistory", result))
                 : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageDTO("Failed to delete history"));
     }
 }
