@@ -50,7 +50,7 @@ public class SocketIOController {
         for(SocketIOServer server : servers.values()) {
             int port = server.getConfiguration().getPort();
             if (socketPorts.contains(port)) {
-                server.addEventListener("message", SocketMsgDTO.class, onMessage(port));
+                server.addEventListener("message", String.class, onMessage(port));
             } else if(intervalSocketPorts==port) {
                 server.addConnectListener(onInterval(port));
                 server.addEventListener("message", SocketMsgDTO.class, onStopMessage(port));
@@ -63,7 +63,7 @@ public class SocketIOController {
     /**
      * message 리스너
      */
-    public DataListener<SocketMsgDTO> onMessage(int port) {
+    public DataListener<String> onMessage(int port) {
         return (client, data, ackSender) -> {
             log.info("Received message on port {}: {}", port, data);
 
@@ -73,20 +73,16 @@ public class SocketIOController {
                 return;
             }
 
-                System.out.println("debug0" + data.toString());
             // 데이터베이스 연결 및 에러 처리
             try {
                 // JSON 데이터 검증
                 SocketMsgDTO parsedData;
-                System.out.println("debug1");
-                parsedData = objectMapper.readValue((DataInput) data, SocketMsgDTO.class);
-                System.out.println("debug2");
+                parsedData = objectMapper.readValue(data, SocketMsgDTO.class);
 
                 Integer status = (Integer) parsedData.getStatus();
                 // 에러 발생 시 DB 저장
                 if (status < 0) {
-                    System.out.println("TEST2");
-                    log.error("Status is negative: {}, {}", status,parsedData.getMessage());
+                    log.error("받은 에러: {}, {}", status,parsedData.getMessage());
                 }
 
                 // 모든 클라이언트에게 메시지 전송
