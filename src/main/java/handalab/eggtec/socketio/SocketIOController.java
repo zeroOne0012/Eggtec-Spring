@@ -53,7 +53,7 @@ public class SocketIOController {
                 server.addEventListener("message", String.class, onMessage(port));
             } else if(intervalSocketPorts==port) {
                 server.addConnectListener(onInterval(port));
-                server.addEventListener("message", SocketMsgDTO.class, onStopMessage(port));
+                server.addEventListener("message", String.class, onStopMessage(port));
             }
         }
     }
@@ -108,12 +108,12 @@ public class SocketIOController {
     }
 
     // stop ?
-    private DataListener<SocketMsgDTO> onStopMessage(int port) {
+    private DataListener<String> onStopMessage(int port) {
         return (client, data, ackSender) -> {
             try {
                 // JSON 데이터 검증
                 SocketMsgDTO parsedData;
-                parsedData = objectMapper.readValue((DataInput) data, SocketMsgDTO.class);
+                parsedData = objectMapper.readValue(data, SocketMsgDTO.class);
 
                 String message =  String.valueOf(parsedData.getMessage());
                 if(message.equals("stop")) {
