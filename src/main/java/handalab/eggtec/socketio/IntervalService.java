@@ -20,9 +20,9 @@ import java.util.concurrent.ScheduledFuture;
 @Service
 public class IntervalService {
 
-    //    @Value("${socketio.server.port.interval}")
-//    private Integer intervalPort;
-    private Integer intervalPort = 5004;
+    @Value("${socketio.server.port.interval}")
+    private Integer intervalPort;
+//    private Integer intervalPort = 5004;
 
     private final Map<Integer, SocketIOServer> socketIOServers;
     private final SocketMapper socketMapper;

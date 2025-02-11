@@ -3,6 +3,7 @@ package handalab.eggtec.socketio;
 import java.io.DataInput;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.corundumstudio.socketio.listener.DataListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,17 +23,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SocketIOController {
 
-//    @Value("${socketio.server.port.interval}")
-//    private Integer intervalSocketPorts;
-////    @Value("${socketio.server.port}")
-//    @Value("#{'${socketio.server.port}'.split(',')}")
-//    private List<Integer> socketPorts;
-////    @Value("${socketio.server.port.no-json}")
-//    @Value("#{'${socketio.server.port.no-json}'.split(',')}")
-//    private List<Integer> noJsonSocketPorts;
-    private final Integer intervalSocketPorts = 5004;
-    private final List<Integer> socketPorts = List.of(5001, 5002, 5003, 5005, 5006);
-    private final List<Integer> noJsonSocketPorts = List.of(5005,5006);
+    private final List<Integer> socketPorts;
+    private final Integer intervalSocketPort;
+    private final List<Integer> noJsonSocketPorts;
+
 
     private final Map<Integer, SocketIOServer> servers;
     private final ObjectMapper objectMapper; // JSON 변환기
@@ -41,7 +35,15 @@ public class SocketIOController {
     /**
      * 소켓 이벤트 리스너 등록
      */
-    public SocketIOController(Map<Integer, SocketIOServer> servers, ObjectMapper objectMapper, IntervalService intervalService) {
+    public SocketIOController(Map<Integer, SocketIOServer> servers, ObjectMapper objectMapper, IntervalService intervalService
+    ,@Value("#{'${socketio.server.port}'.split(',')}") List<String> ports
+    ,@Value("${socketio.server.port.interval}") Integer intervalPort
+    ,@Value("#{'${socketio.server.port.nojson}'.split(',')}") List<String> noJsonPorts) {
+        socketPorts = ports.stream().map(Integer::parseInt).toList();
+        noJsonSocketPorts = noJsonPorts.stream().map(Integer::parseInt).collect(Collectors.toList());
+        // .map(s -> Integer.parseInt(s))
+        intervalSocketPort = intervalPort;
+
         this.servers = servers;
         this.objectMapper = objectMapper;
         this.intervalService = intervalService;
@@ -51,7 +53,7 @@ public class SocketIOController {
             int port = server.getConfiguration().getPort();
             if (socketPorts.contains(port)) {
                 server.addEventListener("message", String.class, onMessage(port));
-            } else if(intervalSocketPorts==port) {
+            } else if(intervalSocketPort ==port) {
                 server.addConnectListener(onInterval(port));
                 server.addEventListener("message", String.class, onStopMessage(port));
             }
@@ -81,7 +83,7 @@ public class SocketIOController {
 
                 Integer status = (Integer) parsedData.getStatus();
                 // 에러 발생 시 DB 저장
-                if (status < 0) {
+                if (status!=null && status < 0) {
                     log.error("받은 에러: {}, {}", status,parsedData.getMessage());
                 }
 
