@@ -56,8 +56,19 @@ public class HistoryService {
 
         return result.stream()
                 .peek(dto -> dto.setLastDate(dto.getLastDate().split("T")[0]))
+//                .map(LastResponseDTO::new)
+//                .map(dto -> new LastResponseDTO(dto))
                 .collect(Collectors.toList());
     }
+//    public List<LastResponseDTO> last() {
+//        List<LastDTO> result = historyMapper.getLast();
+//
+//        return result.stream()
+//                .peek(dto -> dto.setLastDate(dto.getLastDate().split("T")[0]))
+//                .map(LastResponseDTO::new)
+////                .map(dto -> new LastResponseDTO(dto))
+//                .collect(Collectors.toList());
+//    }
 
     public List<TotalDTO> total() {
         List<TotalDTO> result = historyMapper.getTotal();
@@ -138,15 +149,7 @@ public class HistoryService {
         return result;
     }
 
-    public MessageDTO deleteHistory(Integer id) {
-        HistoryDTO result = historyMapper.deleteHistory(id);
-        if (result!=null) {
-            MessageDTO messageDTO = new MessageDTO("Success", new HashMap<>());
-            messageDTO.getProperties().put("deletedHistory", result);
-
-            return messageDTO;
-        } else{
-            return null;
-        }
+    public HistoryDTO deleteHistory(Integer id) {
+        return historyMapper.deleteHistory(id);
     }
 }
