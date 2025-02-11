@@ -40,16 +40,16 @@ public class HistoryController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    @GetMapping("/last")
-    public ResponseEntity<List<LastDTO>> getLast(){
-        List<LastDTO> result = historyService.last();
-        return ResponseEntity.status(HttpStatus.OK).body(result);
-    }
-//    @GetMapping("/last")
-//    public ResponseEntity<List<LastResponseDTO>> getLast(){
-//        List<LastResponseDTO> result = historyService.last();
-//        return ResponseEntity.status(HttpStatus.OK).body(result);
-//    }
+    // @GetMapping("/last")
+    // public ResponseEntity<List<LastDTO>> getLast(){
+    //     List<LastDTO> result = historyService.last();
+    //     return ResponseEntity.status(HttpStatus.OK).body(result);
+    // }
+   @GetMapping("/last")
+   public ResponseEntity<List<LastResponseDTO>> getLast(){
+       List<LastResponseDTO> result = historyService.last();
+       return ResponseEntity.status(HttpStatus.OK).body(result);
+   }
 
     @GetMapping("/total")
     public ResponseEntity<List<TotalDTO>> getTotal(){

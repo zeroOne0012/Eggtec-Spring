@@ -7,7 +7,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import handalab.eggtec.dto.MessageDTO;
 import handalab.eggtec.dto.request.history.CsvFilterDTO;
 import handalab.eggtec.dto.request.history.HistoryFilterDTO;
-import handalab.eggtec.dto.response.history.HistoryDTO;
 import handalab.eggtec.dto.response.history.*;
 import handalab.eggtec.mapper.HistoryMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -51,24 +50,32 @@ public class HistoryService {
                 .collect(Collectors.toList());
     }
 
-    public List<LastDTO> last() {
-        List<LastDTO> result = historyMapper.getLast();
+//     public List<LastDTO> last() {
+//         List<LastDTO> result = historyMapper.getLast();
 
-        return result.stream()
-                .peek(dto -> dto.setLastDate(dto.getLastDate().split("T")[0]))
-//                .map(LastResponseDTO::new)
+//         return result.stream()
+//                 .peek(dto -> dto.setLastDate(dto.getLastDate().split("T")[0]))
+// //                .map(LastResponseDTO::new)
+// //                .map(dto -> new LastResponseDTO(dto))
+//                 .collect(Collectors.toList());
+//     }
+   public List<LastResponseDTO> last() {
+       List<LastDTO> result = historyMapper.getLast();
+
+       return result.stream()
+               .peek(dto -> dto.setLastDate(dto.getLastDate().split("T")[0]))
+               .map(dto->{
+                try {
+                    return new LastResponseDTO(dto.getRecipeNo(), dto.getLastDate(), dto.getNgCountAsList());
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                return null;
+            })
 //                .map(dto -> new LastResponseDTO(dto))
-                .collect(Collectors.toList());
-    }
-//    public List<LastResponseDTO> last() {
-//        List<LastDTO> result = historyMapper.getLast();
-//
-//        return result.stream()
-//                .peek(dto -> dto.setLastDate(dto.getLastDate().split("T")[0]))
-//                .map(LastResponseDTO::new)
-////                .map(dto -> new LastResponseDTO(dto))
-//                .collect(Collectors.toList());
-//    }
+               .collect(Collectors.toList());
+   }
 
     public List<TotalDTO> total() {
         List<TotalDTO> result = historyMapper.getTotal();
