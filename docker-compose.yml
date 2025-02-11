@@ -16,6 +16,18 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  spring:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image:
+      spring
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
 
 volumes:
   postgres_data:
