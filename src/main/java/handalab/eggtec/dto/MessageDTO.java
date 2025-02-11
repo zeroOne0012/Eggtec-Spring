@@ -1,6 +1,7 @@
 package handalab.eggtec.dto;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +17,7 @@ import java.util.Map;
 public class MessageDTO { // csv
     private String message;
 
-    private Map<String, Object> dynamicFields = new HashMap<>();
+    private Map<String, Object> properties = new HashMap<>();
 
     public MessageDTO(String message) {
         this.message = message;
@@ -24,12 +25,14 @@ public class MessageDTO { // csv
 
     public MessageDTO(String message, String key, Object value) {
         this.message = message;
-        this.dynamicFields = new HashMap<>();
-        this.dynamicFields.put(key, value);
+        this.properties.put(key, value);
     }
 
     @JsonAnyGetter // Map의 키를 JSON 속성으로 변환
-    public Map<String, Object> getDynamicFields() {
-        return dynamicFields;
+    public Map<String, Object> getProperties() {
+        return properties;
     }
+
+    @JsonAnySetter
+    public void addProperties(String key, String value) { properties.put(key, value); }
 }

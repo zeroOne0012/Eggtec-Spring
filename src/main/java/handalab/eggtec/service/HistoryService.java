@@ -142,7 +142,7 @@ public class HistoryService {
         HistoryDTO result = historyMapper.deleteHistory(id);
         if (result!=null) {
             MessageDTO messageDTO = new MessageDTO("Success", new HashMap<>());
-            messageDTO.getDynamicFields().put("deletedHistory", result);
+            messageDTO.getProperties().put("deletedHistory", result);
 
             return messageDTO;
         } else{

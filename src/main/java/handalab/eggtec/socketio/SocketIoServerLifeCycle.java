@@ -7,6 +7,9 @@ import com.corundumstudio.socketio.SocketIOServer;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * SocketIoServerLifeCycle.
  *
@@ -16,10 +19,10 @@ import jakarta.annotation.PreDestroy;
  */
 @Component
 public class SocketIoServerLifeCycle {
-    private final SocketIOServer server;
+    private final Map<Integer, SocketIOServer> servers;
 
-    public SocketIoServerLifeCycle(SocketIOServer server) {
-        this.server = server;
+    public SocketIoServerLifeCycle(Map<Integer, SocketIOServer> servers) {
+        this.servers = servers;
     }
 
     /**
@@ -27,7 +30,9 @@ public class SocketIoServerLifeCycle {
      */
     @PostConstruct
     public void start() {
-        server.start();
+        for (SocketIOServer server : servers.values()) {
+            server.start();
+        }
     }
 
     /**
@@ -35,6 +40,8 @@ public class SocketIoServerLifeCycle {
      */
     @PreDestroy
     public void stop() {
-        server.stop();
+        for (SocketIOServer server : servers.values()) {
+            server.stop();
+        }
     }
 }
