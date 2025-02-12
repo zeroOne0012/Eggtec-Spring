@@ -1,7 +1,7 @@
 package handalab.eggtec.controller;
 
 import handalab.eggtec.dto.MessageDTO;
-import handalab.eggtec.dto.response.recipe.RecipeDTO;
+import handalab.eggtec.dto.recipe.RecipeDTO;
 import handalab.eggtec.service.RecipeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package handalab.eggtec.dto.response.history;
+package handalab.eggtec.dto.history;
 
 import lombok.Data;
 

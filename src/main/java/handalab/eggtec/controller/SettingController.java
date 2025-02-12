@@ -1,7 +1,7 @@
 package handalab.eggtec.controller;
 
-import handalab.eggtec.dto.response.setting.InitializeDTO;
-import handalab.eggtec.dto.response.setting.SettingDTO;
+import handalab.eggtec.dto.setting.InitializeDTO;
+import handalab.eggtec.dto.setting.SettingDTO;
 import handalab.eggtec.service.SettingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

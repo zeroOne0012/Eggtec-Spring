@@ -11,28 +11,28 @@
 <!--    <sql id="test"> ${alias}.id,${alias}.username,${alias}.password </sql>-->
 <!--        <include refid="test"><property name="" value=""/></include>-->
 
-    <select id = "getSetting" resultType="handalab.eggtec.dto.response.setting.SettingDTO">
+    <select id = "getSetting" resultType="handalab.eggtec.dto.setting.SettingDTO">
 
         SELECT * FROM setting where idx = 1
 
     </select>
 
 
-    <select id = "getSelected" resultType="handalab.eggtec.dto.response.setting.SelectedDTO">
+    <select id = "getSelected" resultType="handalab.eggtec.dto.setting.SelectedDTO">
 
         select idx, type, weight from recipe where "selected"=true;
 
     </select>
 
 
-    <select id = "getInitialize" resultType="handalab.eggtec.dto.response.setting.SelectedDataDTO">
+    <select id = "getInitialize" resultType="handalab.eggtec.dto.setting.SelectedDataDTO">
 
         select output_cnt, ${exposure} exposure, y1,y2,y3,y4 from setting;
 
     </select>
 
 
-    <select id = "updateSetting" resultType="handalab.eggtec.dto.response.setting.SettingDTO">
+    <select id = "updateSetting" resultType="handalab.eggtec.dto.setting.SettingDTO">
 
         update setting
         <set>

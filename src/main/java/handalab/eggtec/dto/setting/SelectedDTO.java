@@ -1,4 +1,4 @@
-package handalab.eggtec.dto.response.setting;
+package handalab.eggtec.dto.setting;
 
 import lombok.Data;
 

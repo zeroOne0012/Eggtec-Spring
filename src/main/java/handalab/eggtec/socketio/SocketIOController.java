@@ -103,13 +103,13 @@ public class SocketIOController {
             if (!intervalService.isRunning()){
                 intervalService.startInterval();
             }
-//            Map<String, List<String>> params = client.getHandshakeData().getUrlParams();
-//            log.info("connect:" + params.toString());
             log.info("interval is {}", intervalService.isRunning());
         };
     }
 
-    // stop ?
+    /**
+     * message 리스너 (stop 요청)
+     */
     private DataListener<String> onStopMessage(int port) {
         return (client, data, ackSender) -> {
             try {
@@ -126,7 +126,6 @@ public class SocketIOController {
             }
         };
     }
-
 
 //    /**
 //     * 클라이언트 연결 해제 리스너

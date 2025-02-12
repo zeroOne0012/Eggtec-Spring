@@ -1,4 +1,4 @@
-package handalab.eggtec.dto.response.recipe;
+package handalab.eggtec.dto.recipe;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;

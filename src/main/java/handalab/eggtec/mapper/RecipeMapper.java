@@ -1,6 +1,6 @@
 package handalab.eggtec.mapper;
 
-import handalab.eggtec.dto.response.recipe.RecipeDTO;
+import handalab.eggtec.dto.recipe.RecipeDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

@@ -5,9 +5,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import handalab.eggtec.dto.MessageDTO;
-import handalab.eggtec.dto.request.history.CsvFilterDTO;
-import handalab.eggtec.dto.request.history.HistoryFilterDTO;
-import handalab.eggtec.dto.response.history.*;
+import handalab.eggtec.dto.history.*;
 import handalab.eggtec.mapper.HistoryMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,17 +16,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static handalab.eggtec.module.Mkdir.mkdir;
 
-//transactional, autowired
 @Service
 @Slf4j
 @Transactional
@@ -44,7 +37,7 @@ public class HistoryService {
     }
 
 
-    public List<SummaryDTO> summaryByDate(Integer id, HistoryFilterDTO filter) {
+    public List<SummaryDTO> summaryByDate(Integer id, CsvDTO.HistoryFilterDTO filter) {
         List<SummaryDTO> result = historyMapper.getSummary(id, filter);
 
         return result.stream()
@@ -88,7 +81,7 @@ public class HistoryService {
         return csvFile;
     }
 
-    public MessageDTO createCsv(Integer id, CsvFilterDTO info) throws IOException {
+    public MessageDTO createCsv(Integer id, CsvDTO.CsvFilterDTO info) throws IOException {
         List<CsvDTO> csvDTO = historyMapper.getCsvData(id, info); // query execution
 
         // mkdir

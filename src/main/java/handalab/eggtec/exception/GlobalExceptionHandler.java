@@ -16,9 +16,7 @@ import java.util.Map;
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
     private final ErrorMapper errorMapper;
-
     public GlobalExceptionHandler(ErrorMapper errorMapper) {
         this.errorMapper = errorMapper;
     }
@@ -26,7 +24,6 @@ public class GlobalExceptionHandler {
     // error save -> DB
     private int errLog(String type, Map<String, String> res){ // type: 에러 발생 메소드 (type: db column name)
         StringBuilder s = new StringBuilder();
-//        for(Map.Entry<String, String> e : res.entrySet()){
         for(String e : res.values()){
             s.append(e).append(" ");
         }
@@ -39,31 +36,15 @@ public class GlobalExceptionHandler {
         return stackTrace.length > 0 ? stackTrace[0].getMethodName() : "Unknown Method";
     }
 
-//    private String getOccurred(StackTraceElement[] stackTrace) {
-//        String methodName = stackTrace.length > 0 ? stackTrace[0].getMethodName() : "Unknown Method";
-//        String className = stackTrace.length > 0 ? stackTrace[0].getClassName() : "Unknown Class";
-//
-//        return String.format("Exception occurred in %s.%s",
-//                className, methodName);
-//    }
-
-
-    // responseDTO return, errLog()
+    // responseDTO 반환 및 에러 저장 or logging
     private Map<String, String> makeResponse(Exception e, boolean isDbConnection) {
         Map<String, String> response = new HashMap<>();
         response.put("error", e.getClass().getSimpleName());
         response.put("message", e.getMessage());
         if (isDbConnection) errLog(getOccurred(e.getStackTrace()), response);
         else log.error("ERROR! " + (getOccurred(e.getStackTrace()) + ": " + e.getMessage()));
-//        else errLogLocal(getOccurred(e.getStackTrace()), e.getMessage());
         return response;
     }
-    // um.....
-    // if (errLogLocal O + dbConnect X + IOException) -> infinite repetition?
-    // if (isDbConnection X) -> infinite CannotCreateTransactionException
-    //          -> spring.datasource.hikari.connection-timeout=10000 ( CannotCreateTransactionException )
-
-
 
     // 400; 잘못된 요청 파라미터 예외 처리
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -71,7 +52,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(makeResponse(e, true), HttpStatus.BAD_REQUEST);
     }
 
-    // 400; 모든 예외 처리 (기본)
+    // 400; 기본 예외 처리
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGenericException(Exception e) {
         return new ResponseEntity<>(makeResponse(e, true), HttpStatus.BAD_REQUEST);
@@ -89,49 +70,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(makeResponse(e, true), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-
     // 500; 데이터베이스 연결 오류 (JDBC Connection 문제)
-    /*
-        a.
-        가장 최상위 Exception을 등록해야 하는 것으로 보임
-
-        b.
-        @ExceptionHandler()에 여러 개의 exception 등록 가능
-        {
-            @ExceptionHandler({CannotCreateTransactionException.class, Exception.class})
-            public ResponseEntity<Map<String, String>> handleExceptions(Exception e) { ... }
-        }
-     */
+    // 가장 최상위 에러 등록함, 여러개 등록 가능
     @ExceptionHandler(CannotCreateTransactionException.class)
     public ResponseEntity<Map<String, String>> handleDatabaseConnectionError(CannotCreateTransactionException e) {
         return new ResponseEntity<>(makeResponse(e, false), HttpStatus.INTERNAL_SERVER_ERROR);
     }
-//    @ExceptionHandler(CannotGetJdbcConnectionException.class)
-//    public ResponseEntity<Map<String, String>> handleDatabaseConnectionError(CannotGetJdbcConnectionException e) {
-//        return new ResponseEntity<>(makeResponse(e, false), HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
-//    @ExceptionHandler(ConnectException.class)
-//    public ResponseEntity<Map<String, String>> handleDatabaseConnectionError(ConnectException e) {
-//        return new ResponseEntity<>(makeResponse(e, false), HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
-//    @ExceptionHandler(MyBatisSystemException.class)
-//    public ResponseEntity<Map<String, String>> handleDatabaseConnectionError(MyBatisSystemException e) {
-//        return new ResponseEntity<>(makeResponse(e, false), HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
 
-
-    // 500; MyBatis / JPA 쿼리 실행 오류
+    // 500; MyBatis 쿼리 실행 오류
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<Map<String, String>> handleDatabaseError(DataAccessException e) {
         return new ResponseEntity<>(makeResponse(e, true), HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-//    // 404 ... not works
-//    @ExceptionHandler(NoHandlerFoundException.class)
-////    @ResponseStatus(HttpStatus.NOT_FOUND)
-//    public ResponseEntity<String> handleNotFoundError(NoHandlerFoundException e) {
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                .body("요청하신 URL을 찾을 수 없습니다: " + e.getRequestURL());
-//    }
 
 }

@@ -1,4 +1,4 @@
-package handalab.eggtec.dto.response.setting;
+package handalab.eggtec.dto.setting;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

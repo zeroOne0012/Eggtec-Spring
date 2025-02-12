@@ -14,7 +14,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class MessageDTO { // csv
+public class MessageDTO {
     private String message;
 
     private Map<String, Object> properties = new HashMap<>();

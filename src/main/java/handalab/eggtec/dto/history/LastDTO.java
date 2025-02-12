@@ -1,9 +1,7 @@
-package handalab.eggtec.dto.response.history;
+package handalab.eggtec.dto.history;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import handalab.eggtec.dto.JsonDTO;
-import jakarta.annotation.PostConstruct;
 import lombok.Data;
 
 import java.io.IOException;
@@ -23,8 +21,6 @@ public class LastDTO {
 
         }catch(IOException e){
             throw e;
-            // return List.of();
-
         }
     }
 

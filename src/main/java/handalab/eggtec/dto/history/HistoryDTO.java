@@ -1,4 +1,4 @@
-package handalab.eggtec.dto.response.history;
+package handalab.eggtec.dto.history;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)  // null 값이면 JSON에서 제외
 public class HistoryDTO {
-//    @Nullable
     private Integer idx;
 
     @JsonProperty("recipe_no")

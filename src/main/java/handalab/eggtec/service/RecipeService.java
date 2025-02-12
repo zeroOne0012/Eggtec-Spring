@@ -1,6 +1,6 @@
 package handalab.eggtec.service;
 
-import handalab.eggtec.dto.response.recipe.RecipeDTO;
+import handalab.eggtec.dto.recipe.RecipeDTO;
 import handalab.eggtec.mapper.RecipeMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,6 @@ public class RecipeService {
     }
 
     public List<String> getModels() {
-        // System.out.println(netDir);
         // "C:\\Users\\handalab\\Desktop\\netnet";
         File dir = new File(netDir);
         if (!(dir.exists() && dir.isDirectory())) {

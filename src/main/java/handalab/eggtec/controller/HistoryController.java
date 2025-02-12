@@ -1,10 +1,7 @@
 package handalab.eggtec.controller;
 
 import handalab.eggtec.dto.MessageDTO;
-import handalab.eggtec.dto.request.history.CsvFilterDTO;
-import handalab.eggtec.dto.request.history.HistoryFilterDTO;
-import handalab.eggtec.dto.response.history.HistoryDTO;
-import handalab.eggtec.dto.response.history.*;
+import handalab.eggtec.dto.history.*;
 import handalab.eggtec.service.HistoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,12 +26,12 @@ public class HistoryController {
 
         if (result.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } // else null?
+        }
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @PostMapping("/summary/{id}")
-    public ResponseEntity<List<SummaryDTO>> getSummary(@PathVariable(name="id") Integer id, @RequestBody HistoryFilterDTO filter) {
+    public ResponseEntity<List<SummaryDTO>> getSummary(@PathVariable(name="id") Integer id, @RequestBody CsvDTO.HistoryFilterDTO filter) {
         List<SummaryDTO> result = historyService.summaryByDate(id, filter);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
@@ -53,7 +50,7 @@ public class HistoryController {
     }
 
     @PostMapping("/csv/{id}")
-    public ResponseEntity<MessageDTO> createCsv(@PathVariable(name="id") Integer id, @RequestBody CsvFilterDTO info) throws IOException {
+    public ResponseEntity<MessageDTO> createCsv(@PathVariable(name="id") Integer id, @RequestBody CsvDTO.CsvFilterDTO info) throws IOException {
         MessageDTO result = historyService.createCsv(id, info);
         return result!=null ? ResponseEntity.status(HttpStatus.CREATED).body(result) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }

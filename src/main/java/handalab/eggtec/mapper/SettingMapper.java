@@ -1,8 +1,8 @@
 package handalab.eggtec.mapper;
 
-import handalab.eggtec.dto.response.setting.SelectedDataDTO;
-import handalab.eggtec.dto.response.setting.SelectedDTO;
-import handalab.eggtec.dto.response.setting.SettingDTO;
+import handalab.eggtec.dto.setting.SelectedDataDTO;
+import handalab.eggtec.dto.setting.SelectedDTO;
+import handalab.eggtec.dto.setting.SettingDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

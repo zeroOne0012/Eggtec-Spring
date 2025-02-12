@@ -7,7 +7,7 @@
         >
 
 <mapper namespace="handalab.eggtec.mapper.HistoryMapper">
-    <select id="getTotalSummary" resultType="handalab.eggtec.dto.response.history.TotalSummaryDTO">
+    <select id="getTotalSummary" resultType="handalab.eggtec.dto.history.TotalSummaryDTO">
         WITH latest_dates AS (
             SELECT
                 recipe_no,
@@ -61,7 +61,7 @@
             recipe_no;
     </select>
 
-    <select id="getSummary" resultType="handalab.eggtec.dto.response.history.SummaryDTO">
+    <select id="getSummary" resultType="handalab.eggtec.dto.history.SummaryDTO">
         SELECT
             recipe_no,
             created_t::date AS date,
@@ -88,7 +88,7 @@
 
 
 
-    <select id="getLast" resultType="handalab.eggtec.dto.response.history.LastDTO">
+    <select id="getLast" resultType="handalab.eggtec.dto.history.LastDTO">
         WITH latest_dates AS (
             SELECT
                 recipe_no,
@@ -157,7 +157,7 @@
     </select>
 
 
-    <select id = "getTotal" resultType="handalab.eggtec.dto.response.history.TotalDTO">
+    <select id = "getTotal" resultType="handalab.eggtec.dto.history.TotalDTO">
         SELECT
             r.idx AS recipe_no,
             COALESCE(SUM(CASE WHEN h.lane1 != 0 THEN 1 ELSE 0 END +
@@ -177,7 +177,7 @@
             r.idx;
     </select>
 
-    <select id="getCsvData" resultType="handalab.eggtec.dto.response.history.CsvDTO">
+    <select id="getCsvData" resultType="handalab.eggtec.dto.history.CsvDTO">
         SELECT
         recipe_no,
         created_t::date AS date,
@@ -208,14 +208,14 @@
 <!--        VALUES (#{history.recipeNo}, #{history.itemNo}, #{history.lane1}, #{history.lane2}, #{history.lane3}, #{history.lane4}, #{history.lane5}, #{history.lane6}, #{history.createdT})-->
 <!--            ;-->
 <!--    </insert>-->
-    <select id="postHistory" resultType = "handalab.eggtec.dto.response.history.HistoryDTO">
+    <select id="postHistory" resultType = "handalab.eggtec.dto.history.HistoryDTO">
         INSERT INTO history(recipe_no, item_no, lane1, lane2, lane3, lane4, lane5, lane6, created_t)
         VALUES (#{history.recipeNo}, #{history.itemNo}, #{history.lane1}, #{history.lane2}, #{history.lane3}, #{history.lane4}, #{history.lane5}, #{history.lane6}, #{history.createdT})
             returning *;
     </select>
 
 
-    <select id="deleteHistory" resultType="handalab.eggtec.dto.response.history.HistoryDTO">
+    <select id="deleteHistory" resultType="handalab.eggtec.dto.history.HistoryDTO">
         DELETE FROM history
         WHERE idx = #{id}
             RETURNING *;

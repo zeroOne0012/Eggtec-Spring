@@ -1,9 +1,9 @@
 package handalab.eggtec.service;
 
-import handalab.eggtec.dto.response.setting.InitializeDTO;
-import handalab.eggtec.dto.response.setting.SelectedDataDTO;
-import handalab.eggtec.dto.response.setting.SelectedDTO;
-import handalab.eggtec.dto.response.setting.SettingDTO;
+import handalab.eggtec.dto.setting.InitializeDTO;
+import handalab.eggtec.dto.setting.SelectedDataDTO;
+import handalab.eggtec.dto.setting.SelectedDTO;
+import handalab.eggtec.dto.setting.SettingDTO;
 import handalab.eggtec.mapper.SettingMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
