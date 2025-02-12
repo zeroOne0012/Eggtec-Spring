@@ -1,21 +1,19 @@
 package handalab.eggtec.exception;
 import handalab.eggtec.mapper.ErrorMapper;
-import org.mybatis.spring.MyBatisSystemException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.net.ConnectException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-
-
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -49,19 +47,27 @@ public class GlobalExceptionHandler {
 //                className, methodName);
 //    }
 
+
     // responseDTO return, errLog()
     private Map<String, String> makeResponse(Exception e, boolean isDbConnection) {
         Map<String, String> response = new HashMap<>();
         response.put("error", e.getClass().getSimpleName());
         response.put("message", e.getMessage());
         if (isDbConnection) errLog(getOccurred(e.getStackTrace()), response);
+        else log.error("ERROR! " + (getOccurred(e.getStackTrace()) + ": " + e.getMessage()));
+//        else errLogLocal(getOccurred(e.getStackTrace()), e.getMessage());
         return response;
     }
+    // um.....
+    // if (errLogLocal O + dbConnect X + IOException) -> infinite repetition?
+    // if (isDbConnection X) -> infinite CannotCreateTransactionException
+    //          -> spring.datasource.hikari.connection-timeout=10000 ( CannotCreateTransactionException )
+
 
 
     // 400; 잘못된 요청 파라미터 예외 처리
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<Map<String, String>> handleArgumentMismatch(MethodArgumentTypeMismatchException e) {
+    public ResponseEntity<Map<String, String>> handleArgumentMismatch(MethodArgumentTypeMismatchException e) throws IOException {
         return new ResponseEntity<>(makeResponse(e, true), HttpStatus.BAD_REQUEST);
     }
 
@@ -74,6 +80,12 @@ public class GlobalExceptionHandler {
     // 500
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleRuntimeException(Exception e) {
+        return new ResponseEntity<>(makeResponse(e, true), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // 500
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<Map<String, String>> handleIOException(IOException e) {
         return new ResponseEntity<>(makeResponse(e, true), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

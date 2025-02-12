@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static handalab.eggtec.module.Mkdir.mkdir;
+
 //transactional, autowired
 @Service
 @Slf4j
@@ -73,20 +75,7 @@ public class HistoryService {
         return result;
     }
 
-    private String mkdir(String csvPath) throws IOException {
-        // path
-        String totalPath = Paths.get("").toAbsolutePath().toString() + File.separator + "csv" + File.separator + csvPath + File.separator;
-        Path directoryPath = Paths.get(totalPath);
 
-        // mkdir
-        try {
-            Files.createDirectories(directoryPath); // create dir if not exists
-        } catch (IOException e) {
-            log.info(e.getMessage());
-            throw new IOException(e); // fail mkdir
-        }
-        return totalPath;
-    }
 
     private File getUniqueFilePath(String totalPath, String fileName) {
         File csvFile = new File(totalPath + File.separator + fileName);
