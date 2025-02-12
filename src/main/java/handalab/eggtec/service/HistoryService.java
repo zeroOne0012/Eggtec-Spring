@@ -50,15 +50,7 @@ public class HistoryService {
                 .collect(Collectors.toList());
     }
 
-//     public List<LastDTO> last() {
-//         List<LastDTO> result = historyMapper.getLast();
 
-//         return result.stream()
-//                 .peek(dto -> dto.setLastDate(dto.getLastDate().split("T")[0]))
-// //                .map(LastResponseDTO::new)
-// //                .map(dto -> new LastResponseDTO(dto))
-//                 .collect(Collectors.toList());
-//     }
    public List<LastResponseDTO> last() {
        List<LastDTO> result = historyMapper.getLast();
 
@@ -73,7 +65,6 @@ public class HistoryService {
                 }
                 return null;
             })
-//                .map(dto -> new LastResponseDTO(dto))
                .collect(Collectors.toList());
    }
 
