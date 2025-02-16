@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  postgres:
+    container_name: postgres_ex
+    image: postgres
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "1234"
+      POSTGRES_DB: eggtec
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  spring:
+    image:
+      eggtec_spring:0.1
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    environment:
+      DB_USERNAME: postgres
+      DB_PASSWORD: 1234
+      DB_URL: jdbc:postgresql://postgres:5432/eggtec
+#      loclahost -> postgres(service name)
+#      5433 -> 5432 (internal port)
+
+volumes:
+  postgres_data:

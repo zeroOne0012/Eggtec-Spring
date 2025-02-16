@@ -58,3 +58,12 @@ tasks.named('test') {
 jar {
     enabled = false
 }
+
+bootBuildImage {
+    imageName = "eggtec_spring:0.1"
+    environment = [
+        'DB_USERNAME': 'postgres',
+        'DB_PASSWORD': '1234',
+        'DB_URL': 'jdbc:postgresql://postgres:5432/eggtec'
+    ]
+}
