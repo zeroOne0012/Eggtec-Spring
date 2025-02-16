@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+        >
+
+<mapper namespace="handalab.eggtec.mapper.SettingMapper">
+
+<!--    <sql id="test"> ${alias}.id,${alias}.username,${alias}.password </sql>-->
+<!--        <include refid="test"><property name="" value=""/></include>-->
+
+    <select id = "getSetting" resultType="handalab.eggtec.dto.setting.SettingDTO">
+
+        SELECT * FROM setting where idx = 1
+
+    </select>
+
+
+    <select id = "getSelected" resultType="handalab.eggtec.dto.setting.SelectedDTO">
+
+        select idx, type, weight from recipe where "selected"=true;
+
+    </select>
+
+
+    <select id = "getInitialize" resultType="handalab.eggtec.dto.setting.SelectedDataDTO">
+
+        select output_cnt, ${exposure} exposure, y1,y2,y3,y4 from setting;
+
+    </select>
+
+
+    <select id = "updateSetting" resultType="handalab.eggtec.dto.setting.SettingDTO">
+
+        update setting
+        <set>
+            <if test="setting.outputCnt != null"> output_cnt = #{setting.outputCnt}, </if>
+            <if test="setting.title != null"> title = #{setting.title}, </if>
+            <if test="setting.expWhite != null"> exp_white = #{setting.expWhite}, </if>
+            <if test="setting.expBrown != null"> exp_brown = #{setting.expBrown}, </if>
+            <if test="setting.y1 != null"> y1 = #{setting.y1}, </if>
+            <if test="setting.y2 != null"> y2 = #{setting.y2}, </if>
+            <if test="setting.y3 != null"> y3 = #{setting.y3}, </if>
+            <if test="setting.y4 != null"> y4 = #{setting.y4}, </if>
+        </set>
+        where idx = 1
+        returning *;
+
+    </select>
+
+
+</mapper>

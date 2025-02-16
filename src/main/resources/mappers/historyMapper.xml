@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+        >
+
+<mapper namespace="handalab.eggtec.mapper.HistoryMapper">
+    <select id="getTotalSummary" resultType="handalab.eggtec.dto.history.TotalSummaryDTO">
+        WITH latest_dates AS (
+            SELECT
+                recipe_no,
+                MAX(created_t::date) AS latest_date
+            FROM
+                history
+            GROUP BY
+                recipe_no
+        ),
+             latest_data AS (
+                 SELECT
+                     h.*
+                 FROM
+                     history h
+                         INNER JOIN
+                     latest_dates ld
+                     ON
+                         h.recipe_no = ld.recipe_no
+                             AND h.created_t::date = ld.latest_date
+            ),
+            result_stats AS (
+        SELECT
+            recipe_no,
+            ROUND(
+            (SUM(CASE WHEN lane1 != 0 THEN 1 ELSE 0 END +
+            CASE WHEN lane2 != 0 THEN 1 ELSE 0 END +
+            CASE WHEN lane3 != 0 THEN 1 ELSE 0 END +
+            CASE WHEN lane4 != 0 THEN 1 ELSE 0 END +
+            CASE WHEN lane5 != 0 THEN 1 ELSE 0 END +
+            CASE WHEN lane6 != 0 THEN 1 ELSE 0 END)::decimal
+            / NULLIF(COUNT(*), 0)) / 6 * 100, 2
+            ) AS ng_percentage
+        FROM
+            latest_data
+        GROUP BY
+            recipe_no
+            )
+        SELECT
+            r.idx AS recipe_no,  -- recipe_no 대신 idx 사용
+            r.nickname,
+            r.type,
+            r.weight,
+            COALESCE(rs.ng_percentage, 0) AS ng_percentage
+        FROM
+            recipe r
+                LEFT JOIN
+            result_stats rs
+            ON
+                r.idx = rs.recipe_no
+        ORDER BY
+            recipe_no;
+    </select>
+
+    <select id="getSummary" resultType="handalab.eggtec.dto.history.SummaryDTO">
+        SELECT
+            recipe_no,
+            created_t::date AS date,
+          COALESCE(SUM(CASE WHEN lane1 != 0 THEN 1 ELSE 0 END +
+              CASE WHEN lane2 != 0 THEN 1 ELSE 0 END +
+              CASE WHEN lane3 != 0 THEN 1 ELSE 0 END +
+              CASE WHEN lane4 != 0 THEN 1 ELSE 0 END +
+              CASE WHEN lane5 != 0 THEN 1 ELSE 0 END +
+              CASE WHEN lane6 != 0 THEN 1 ELSE 0 END), 0) AS ng_count
+        FROM
+            history
+        <where>
+            recipe_no = #{id}
+            <if test="filter.startDate!=null and filter.endDate!=null">
+                AND created_t::date BETWEEN #{filter.startDate}::date + INTERVAL '1 day' AND #{filter.endDate}::date + INTERVAL '1 day'
+            </if>
+        </where>
+        GROUP BY
+            recipe_no, created_t::date
+        ORDER BY
+            date;
+    </select>
+
+
+
+
+    <select id="getLast" resultType="handalab.eggtec.dto.history.LastDTO">
+        WITH latest_dates AS (
+            SELECT
+                recipe_no,
+                MAX(created_t::date) AS last_date
+            FROM
+                history
+            GROUP BY
+                recipe_no
+        ),
+             hourly_series AS (
+                 SELECT
+                     ld.recipe_no,
+                     ld.last_date,
+                     generate_series(
+                             ld.last_date,
+                             ld.last_date + INTERVAL '1 day' - INTERVAL '1 hour',
+                             '1 hour'
+                     ) AS hour_bucket
+                 FROM
+                     latest_dates ld
+             ),
+             filtered_data AS (
+                 SELECT
+                     h.recipe_no,
+                     DATE_TRUNC('hour', h.created_t) AS hour_bucket,
+                     COALESCE(SUM(CASE WHEN lane1 != 0 THEN 1 ELSE 0 END +
+                                  CASE WHEN lane2 != 0 THEN 1 ELSE 0 END +
+                                  CASE WHEN lane3 != 0 THEN 1 ELSE 0 END +
+                                  CASE WHEN lane4 != 0 THEN 1 ELSE 0 END +
+                                  CASE WHEN lane5 != 0 THEN 1 ELSE 0 END +
+                                  CASE WHEN lane6 != 0 THEN 1 ELSE 0 END), 0) AS ng_count
+                 FROM
+                     history h
+                         INNER JOIN
+                     latest_dates ld
+                     ON
+                         h.recipe_no = ld.recipe_no AND h.created_t::date = ld.last_date
+        GROUP BY
+            h.recipe_no, DATE_TRUNC('hour', h.created_t)
+            ),
+            final_data AS (
+        SELECT
+            hs.recipe_no,
+            hs.last_date::date AS last_date,
+            hs.hour_bucket,
+            COALESCE(fd.ng_count, 0) AS ng_count
+        FROM
+            hourly_series hs
+            LEFT JOIN
+            filtered_data fd
+        ON
+            hs.recipe_no = fd.recipe_no AND hs.hour_bucket = fd.hour_bucket
+            )
+        SELECT
+            recipe_no,
+            last_date,
+            JSON_AGG(
+                    ng_count ORDER BY hour_bucket
+            ) AS ng_count
+        FROM
+            final_data
+        GROUP BY
+            recipe_no, last_date
+        ORDER BY
+            recipe_no;
+    </select>
+
+
+    <select id = "getTotal" resultType="handalab.eggtec.dto.history.TotalDTO">
+        SELECT
+            r.idx AS recipe_no,
+            COALESCE(SUM(CASE WHEN h.lane1 != 0 THEN 1 ELSE 0 END +
+                         CASE WHEN h.lane2 != 0 THEN 1 ELSE 0 END +
+                         CASE WHEN h.lane3 != 0 THEN 1 ELSE 0 END +
+                         CASE WHEN h.lane4 != 0 THEN 1 ELSE 0 END +
+                         CASE WHEN h.lane5 != 0 THEN 1 ELSE 0 END +
+                         CASE WHEN h.lane6 != 0 THEN 1 ELSE 0 END), 0) AS ng_total_count
+        FROM
+                (SELECT DISTINCT idx FROM recipe) r
+                    LEFT JOIN
+            history h
+            ON r.idx = h.recipe_no
+        GROUP BY
+            r.idx
+        ORDER BY
+            r.idx;
+    </select>
+
+    <select id="getCsvData" resultType="handalab.eggtec.dto.history.CsvDTO">
+        SELECT
+        recipe_no,
+        created_t::date AS date,
+        COALESCE(SUM(CASE WHEN lane1 != 0 THEN 1 ELSE 0 END +
+        CASE WHEN lane2 != 0 THEN 1 ELSE 0 END +
+        CASE WHEN lane3 != 0 THEN 1 ELSE 0 END +
+        CASE WHEN lane4 != 0 THEN 1 ELSE 0 END +
+        CASE WHEN lane5 != 0 THEN 1 ELSE 0 END +
+        CASE WHEN lane6 != 0 THEN 1 ELSE 0 END), 0) AS ng_count
+        FROM
+        history
+
+        <where>
+            recipe_no = #{id}
+            <if test="filter.startDate!=null and filter.endDate!=null">
+                AND created_t::date BETWEEN #{filter.startDate}::date + INTERVAL '1 day' AND #{filter.endDate}::date + INTERVAL '1 day'
+            </if>
+        </where>
+        GROUP BY
+        recipe_no, created_t::date
+        ORDER BY
+        date;
+
+    </select>
+
+<!--    <insert id="postHistory" useGeneratedKeys="true" keyProperty="idx">-->
+<!--        INSERT INTO history(recipe_no, item_no, lane1, lane2, lane3, lane4, lane5, lane6, created_t)-->
+<!--        VALUES (#{history.recipeNo}, #{history.itemNo}, #{history.lane1}, #{history.lane2}, #{history.lane3}, #{history.lane4}, #{history.lane5}, #{history.lane6}, #{history.createdT})-->
+<!--            ;-->
+<!--    </insert>-->
+    <select id="postHistory" resultType = "handalab.eggtec.dto.history.HistoryDTO">
+        INSERT INTO history(recipe_no, item_no, lane1, lane2, lane3, lane4, lane5, lane6, created_t)
+        VALUES (#{history.recipeNo}, #{history.itemNo}, #{history.lane1}, #{history.lane2}, #{history.lane3}, #{history.lane4}, #{history.lane5}, #{history.lane6}, #{history.createdT})
+            returning *;
+    </select>
+
+
+    <select id="deleteHistory" resultType="handalab.eggtec.dto.history.HistoryDTO">
+        DELETE FROM history
+        WHERE idx = #{id}
+            RETURNING *;
+    </select>
+
+</mapper>

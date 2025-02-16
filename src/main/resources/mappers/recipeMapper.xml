@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+        >
+
+<mapper namespace="handalab.eggtec.mapper.RecipeMapper">
+    <select id = "getAllRecipes" resultType="handalab.eggtec.dto.recipe.RecipeDTO">
+        SELECT * FROM recipe ORDER BY idx
+    </select>
+
+
+    <select id = "getRecipe" resultType="handalab.eggtec.dto.recipe.RecipeDTO">
+        SELECT * FROM recipe where idx = #{id};
+    </select>
+
+    <select id = "postRecipe" resultType="handalab.eggtec.dto.recipe.RecipeDTO">
+        INSERT INTO recipe (idx, nickname, type, weight)
+        VALUES (#{recipe.idx}, #{recipe.nickname}, #{recipe.type}, #{recipe.weight})
+            RETURNING *;
+    </select>
+
+    <select id = "updateRecipe" resultType = "handalab.eggtec.dto.recipe.RecipeDTO">
+        UPDATE recipe
+        <set>
+            <if test = "r.idx != null">idx = #{r.idx},</if>
+            <if test = "r.nickname != null">nickname = #{r.nickname},</if>
+            <if test = "r.type != null">type = #{r.type},</if>
+            <if test = "r.weight != null">weight = #{r.weight},</if>
+            <if test = "r.selected != null">selected = #{r.selected},</if>
+        </set>
+        where idx = #{id}
+        RETURNING *;
+    </select>
+
+    <select id = "deleteRecipe" resultType="handalab.eggtec.dto.recipe.RecipeDTO">
+        DELETE FROM recipe WHERE idx = #{id} RETURNING *
+    </select>
+
+
+
+</mapper>
