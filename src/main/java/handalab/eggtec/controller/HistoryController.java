@@ -31,7 +31,7 @@ public class HistoryController {
     }
 
     @PostMapping("/summary/{id}")
-    public ResponseEntity<List<SummaryDTO>> getSummary(@PathVariable(name="id") Integer id, @RequestBody CsvDTO.HistoryFilterDTO filter) {
+    public ResponseEntity<List<SummaryDTO>> getSummary(@PathVariable(name="id") Integer id, @RequestBody HistoryFilterDTO filter) {
         List<SummaryDTO> result = historyService.summaryByDate(id, filter);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
@@ -50,7 +50,7 @@ public class HistoryController {
     }
 
     @PostMapping("/csv/{id}")
-    public ResponseEntity<MessageDTO> createCsv(@PathVariable(name="id") Integer id, @RequestBody CsvDTO.CsvFilterDTO info) throws IOException {
+    public ResponseEntity<MessageDTO> createCsv(@PathVariable(name="id") Integer id, @RequestBody CsvFilterDTO info) throws IOException {
         MessageDTO result = historyService.createCsv(id, info);
         return result!=null ? ResponseEntity.status(HttpStatus.CREATED).body(result) : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }

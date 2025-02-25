@@ -10,13 +10,13 @@ import java.util.List;
 public interface HistoryMapper {
     List<TotalSummaryDTO> getTotalSummary();
 
-    List<SummaryDTO> getSummary(@Param("id") Integer id, @Param("filter") CsvDTO.HistoryFilterDTO filter); //Integer?
+    List<SummaryDTO> getSummary(@Param("id") Integer id, @Param("filter") HistoryFilterDTO filter); //Integer?
 
     List<LastDTO> getLast();
 
     List<TotalDTO> getTotal();
 
-    List<CsvDTO> getCsvData(@Param("id") Integer id, @Param("filter") CsvDTO.CsvFilterDTO info);
+    List<CsvDTO> getCsvData(@Param("id") Integer id, @Param("filter") CsvFilterDTO info);
 
     HistoryDTO postHistory(@Param("history") HistoryDTO history);
 

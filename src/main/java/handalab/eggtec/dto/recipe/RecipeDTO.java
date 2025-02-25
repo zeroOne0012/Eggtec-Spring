@@ -3,6 +3,7 @@ package handalab.eggtec.dto.recipe;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
+// GET recipe
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RecipeDTO {

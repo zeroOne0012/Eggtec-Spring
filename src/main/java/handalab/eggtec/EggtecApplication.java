@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 public class EggtecApplication {
-
+	// 서버 시작
 	public static void main(String[] args) {
 		SpringApplication.run(EggtecApplication.class, args);
 	}

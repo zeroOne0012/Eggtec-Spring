@@ -11,6 +11,7 @@ import reactor.util.annotation.NonNull;
 import java.util.HashMap;
 import java.util.Map;
 
+// 임의의 필드를 가지는 메시지 DTO
 @Data
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)

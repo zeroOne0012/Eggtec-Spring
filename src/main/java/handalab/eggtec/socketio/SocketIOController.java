@@ -7,13 +7,16 @@ import java.util.stream.Collectors;
 
 import com.corundumstudio.socketio.listener.DataListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import handalab.eggtec.dto.socketio.SocketMsgDTO;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.listener.ConnectListener;
 
+import handalab.eggtec.log.Logger;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -22,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Slf4j
 public class SocketIOController {
+    private final Logger logger;
 
     private final List<Integer> socketPorts;
     private final Integer intervalSocketPort;
@@ -35,20 +39,20 @@ public class SocketIOController {
     /**
      * 소켓 이벤트 리스너 등록
      */
-    public SocketIOController(Map<Integer, SocketIOServer> servers, ObjectMapper objectMapper, IntervalService intervalService
+    public SocketIOController(Map<Integer, SocketIOServer> servers, ObjectMapper objectMapper, IntervalService intervalService, Logger logger
     ,@Value("#{'${socketio.server.port}'.split(',')}") List<String> ports
     ,@Value("${socketio.server.port.interval}") Integer intervalPort
     ,@Value("#{'${socketio.server.port.nojson}'.split(',')}") List<String> noJsonPorts) {
         socketPorts = ports.stream().map(Integer::parseInt).toList();
         noJsonSocketPorts = noJsonPorts.stream().map(Integer::parseInt).collect(Collectors.toList());
-        // .map(s -> Integer.parseInt(s))
         intervalSocketPort = intervalPort;
 
         this.servers = servers;
         this.objectMapper = objectMapper;
         this.intervalService = intervalService;
+        this.logger = logger;
 
-        // 소켓 이벤트 리스너 등록
+        // 소켓별 이벤트 리스너 등록
         for(SocketIOServer server : servers.values()) {
             int port = server.getConfiguration().getPort();
             if (socketPorts.contains(port)) {
@@ -60,16 +64,12 @@ public class SocketIOController {
         }
     }
 
-
-
     /**
      * message 리스너
      */
     public DataListener<String> onMessage(int port) {
         return (client, data, ackSender) -> {
-            log.info("Received message on port {}: {}", port, data);
-
-            // *005 또는 *006 포트에서 실행 시 Broadcast
+            // 4005 또는 4006 포트에서 실행 시 바로 브로드캐스트
             if (noJsonSocketPorts.contains(port)) {
                 servers.get(port).getBroadcastOperations().sendEvent("message", data);
                 return;
@@ -82,21 +82,22 @@ public class SocketIOController {
                 parsedData = objectMapper.readValue(data, SocketMsgDTO.class);
 
                 Integer status = (Integer) parsedData.getStatus();
-                // 에러 발생 시 DB 저장
+                // 에러 DB 저장
                 if (status!=null && status < 0) {
-                    log.error("받은 에러: {}, {}", status,parsedData.getMessage());
+                    logger.errLog("port("+port+")", parsedData.getMessage());
                 }
 
-                // 모든 클라이언트에게 메시지 전송
+                // 브로드캐스트
                 servers.get(port).getBroadcastOperations().sendEvent("message", data);
             } catch (Exception e) {
-                log.error("Port {} - Database Error: {}", port, e.getMessage());
+
+               log.error("Port {} - Database Error: {}", port, e.getMessage());
             }
         };
     }
 
     /**
-     * 클라이언트 연결 리스너
+     * 클라이언트 연결 리스너 (interval start)
      */
     public ConnectListener onInterval(int port) {
         return (client) -> {
@@ -127,14 +128,4 @@ public class SocketIOController {
         };
     }
 
-//    /**
-//     * 클라이언트 연결 해제 리스너
-//     */
-//    public DisconnectListener listenDisconnected() {
-//        return client -> {
-//            String sessionId = client.getSessionId().toString();
-//            log.info("disconnect: " + sessionId);
-//            client.disconnect();
-//        };
-//    }
 }

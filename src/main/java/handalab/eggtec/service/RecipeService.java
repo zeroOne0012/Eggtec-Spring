@@ -14,20 +14,22 @@ import java.util.Objects;
 @Service
 @Transactional
 public class RecipeService {
-    @Value("./netnet") // NET_DIR = C:\\\\Users\\\\handalab\\\\Desktop\\\\netnet
-    // NET_DIR=./netnet
-    private String netDir;
+    @Value("./net") // .env -> NET_DIR = C:\\\\Users\\\\handalab\\\\Desktop\\\\net
+    private String netDir; // netDir=./net
 
     private final RecipeMapper recipeMapper;
     public RecipeService(RecipeMapper recipeMapper) {
         this.recipeMapper = recipeMapper;
     }
+
+    // GET /
     public List<RecipeDTO> getAllRecipes() {
         return recipeMapper.getAllRecipes();
     }
 
+    // GET /model
     public List<String> getModels() {
-        // "C:\\Users\\handalab\\Desktop\\netnet";
+        // "C:\\Users\\handalab\\Desktop\\net";
         File dir = new File(netDir);
         if (!(dir.exists() && dir.isDirectory())) {
             return null;
@@ -37,19 +39,22 @@ public class RecipeService {
         return Arrays.asList(Objects.requireNonNull(files));
     }
 
-
+    // GET /{id}
     public RecipeDTO getRecipe(Integer id) {
         return recipeMapper.getRecipe(id);
     }
 
+    // POST /
     public RecipeDTO postRecipe(RecipeDTO recipeDTO) {
         return recipeMapper.postRecipe(recipeDTO);
     }
 
+    // PATCH /{id}
     public RecipeDTO updateRecipe(Integer id, RecipeDTO recipeDTO) {
         return recipeMapper.updateRecipe(id, recipeDTO);
     }
-
+    
+    // DELETE /{id}
     public RecipeDTO deleteRecipe(Integer id) {
         return recipeMapper.deleteRecipe(id);
     }

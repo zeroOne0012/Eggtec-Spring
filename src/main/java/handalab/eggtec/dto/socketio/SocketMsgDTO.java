@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+// 소켓으로 주고 받는 메시지
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

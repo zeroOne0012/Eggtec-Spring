@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.util.List;
 
+// GET /apis/setting/initialize 응답
 @Data
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)

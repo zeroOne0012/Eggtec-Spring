@@ -2,6 +2,7 @@ package handalab.eggtec.dto.history;
 
 import lombok.Data;
 
+// GET /apis/history/summary/ 응답
 @Data
 public class TotalSummaryDTO { // list
     private Integer recipeNo;

@@ -9,7 +9,7 @@ services:
       - "5433:5432"
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: "1234"
+      POSTGRES_PASSWORD: 1234
       POSTGRES_DB: eggtec
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
@@ -17,11 +17,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
   spring:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image:
-      spring
+    image: eggtec_spring:0.1
     depends_on:
       - postgres
     ports:
@@ -29,11 +25,14 @@ services:
     volumes:
       - .:/app
     environment:
-      DB_USERNAME: postgres
-      DB_PASSWORD: 1234
-      DB_URL: jdbc:postgresql://postgres:5432/eggtec
-#      loclahost -> postgres(service name)
-#      5433 -> 5432 (internal port)
+      DB_USERNAME: handalab
+      DB_PASSWORD: handalab
+      DB_URL: jdbc:postgresql://host.docker.internal:5432/eggtec
+    # # docker db
+    # environment:
+    #   DB_USERNAME: postgres
+    #   DB_PASSWORD: 1234
+    #   DB_URL: jdbc:postgresql://postgres:5432/eggtec
 
 volumes:
   postgres_data:

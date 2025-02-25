@@ -32,6 +32,7 @@ public class IntervalService {
         this.socketIOServers = socketIOServer;
     }
 
+    // interval port 접근 시시
     public void startInterval() {
         if (!isRunning) {
             scheduledTask = taskScheduler.scheduleAtFixedRate(this::executeTask, Duration.ofSeconds(3));
@@ -40,6 +41,7 @@ public class IntervalService {
         }
     }
 
+    // interval port - "stop" 수신 시시
     public void stopInterval() {
         if (scheduledTask != null && isRunning) {
             scheduledTask.cancel(true);
@@ -48,10 +50,11 @@ public class IntervalService {
         }
     }
 
+    // interval task
     private void executeTask() {
-        List<IntervalDTO> intervalDTO = socketMapper.getIntervalData();
+        List<IntervalDTO> intervalDTO = socketMapper.getIntervalData(); // query
         intervalDTO.getFirst().setLaneNo("all_total");
-        socketIOServers.get(intervalPort).getBroadcastOperations().sendEvent("message", intervalDTO);
+        socketIOServers.get(intervalPort).getBroadcastOperations().sendEvent("message", intervalDTO); // broadcast(emit)
     }
 
     public boolean isRunning() {

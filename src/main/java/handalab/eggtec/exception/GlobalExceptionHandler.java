@@ -1,6 +1,7 @@
 package handalab.eggtec.exception;
 import handalab.eggtec.mapper.ErrorMapper;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.CannotCreateTransactionException;
@@ -12,26 +13,17 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import handalab.eggtec.log.Logger;
 
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    private final ErrorMapper errorMapper;
-    public GlobalExceptionHandler(ErrorMapper errorMapper) {
-        this.errorMapper = errorMapper;
+    private final Logger logger;
+    public GlobalExceptionHandler(Logger logger, ErrorMapper errorMapper) {
+        this.logger = logger;
     }
 
-    // error save -> DB
-    private int errLog(String type, Map<String, String> res){ // type: 에러 발생 메소드 (type: db column name)
-        StringBuilder s = new StringBuilder();
-        for(String e : res.values()){
-            s.append(e).append(" ");
-        }
-        s.append("\n");
-        return errorMapper.errLog(type, s.toString());
-    }
-
-    // Exception.getStackTrace()에서 mothod 이름 반환
+    // Exception.getStackTrace()에서 method 이름 반환
     private String getOccurred(StackTraceElement[] stackTrace) {
         return stackTrace.length > 0 ? stackTrace[0].getMethodName() : "Unknown Method";
     }
@@ -41,7 +33,7 @@ public class GlobalExceptionHandler {
         Map<String, String> response = new HashMap<>();
         response.put("error", e.getClass().getSimpleName());
         response.put("message", e.getMessage());
-        if (isDbConnection) errLog(getOccurred(e.getStackTrace()), response);
+        if (isDbConnection) logger.errLog(getOccurred(e.getStackTrace()), response);
         else log.error("ERROR! " + (getOccurred(e.getStackTrace()) + ": " + e.getMessage()));
         return response;
     }
@@ -71,7 +63,7 @@ public class GlobalExceptionHandler {
     }
 
     // 500; 데이터베이스 연결 오류 (JDBC Connection 문제)
-    // 가장 최상위 에러 등록함, 여러개 등록 가능
+    // (가장 최상위 에러 등록함, 여러개 등록 가능)
     @ExceptionHandler(CannotCreateTransactionException.class)
     public ResponseEntity<Map<String, String>> handleDatabaseConnectionError(CannotCreateTransactionException e) {
         return new ResponseEntity<>(makeResponse(e, false), HttpStatus.INTERNAL_SERVER_ERROR);

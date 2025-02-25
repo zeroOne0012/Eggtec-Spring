@@ -31,13 +31,13 @@ public class HistoryService {
         this.historyMapper = historyMapper;
     }
 
-
+    // GET /summary
     public List<TotalSummaryDTO> totalSummary() {
         return historyMapper.getTotalSummary();
     }
 
-
-    public List<SummaryDTO> summaryByDate(Integer id, CsvDTO.HistoryFilterDTO filter) {
+    // POST /summary/{id}
+    public List<SummaryDTO> summaryByDate(Integer id, HistoryFilterDTO filter) {
         List<SummaryDTO> result = historyMapper.getSummary(id, filter);
 
         return result.stream()
@@ -45,8 +45,8 @@ public class HistoryService {
                 .collect(Collectors.toList());
     }
 
-
-   public List<LastResponseDTO> last() {
+    // GET /last
+    public List<LastResponseDTO> last() {
        List<LastDTO> result = historyMapper.getLast();
 
        return result.stream()
@@ -55,7 +55,6 @@ public class HistoryService {
                 try {
                     return new LastResponseDTO(dto.getRecipeNo(), dto.getLastDate(), dto.getNgCountAsList());
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 return null;
@@ -63,25 +62,26 @@ public class HistoryService {
                .collect(Collectors.toList());
    }
 
+    // GET /total
     public List<TotalDTO> total() {
         List<TotalDTO> result = historyMapper.getTotal();
         return result;
     }
 
-
-
+    // filename 중복 방지
     private File getUniqueFilePath(String totalPath, String fileName) {
         File csvFile = new File(totalPath + File.separator + fileName);
         int count = 1;
 
-        while(csvFile.exists()) {
+        while(csvFile.exists()) { //  file (1), file (2), file (3) ...
             csvFile = new File(totalPath + File.separator + fileName + " (" + count + ")");
             count++;
         }
         return csvFile;
     }
 
-    public MessageDTO createCsv(Integer id, CsvDTO.CsvFilterDTO info) throws IOException {
+    // POST /csv/{id}
+    public MessageDTO createCsv(Integer id, CsvFilterDTO info) throws IOException {
         List<CsvDTO> csvDTO = historyMapper.getCsvData(id, info); // query execution
 
         // mkdir
@@ -114,7 +114,6 @@ public class HistoryService {
                 writer.writeValues(outputStreamWriter).writeAll(csvDTO); // query 결과
             }
         } catch (IOException e) {
-//            log.info(e.getMessage());
             throw new IOException(e);
         }
 
@@ -123,12 +122,12 @@ public class HistoryService {
         return new MessageDTO(fileNameParts[fileNameParts.length - 2] + File.separator + fileNameParts[fileNameParts.length - 1]);
     }
 
+    // POST /
     public HistoryDTO createHistory(HistoryDTO history) {
-        HistoryDTO result = historyMapper.postHistory(history);
-//        log.info(result.toString());
-        return result;
+        return historyMapper.postHistory(history);
     }
 
+    // DELETE /{id}
     public HistoryDTO deleteHistory(Integer id) {
         return historyMapper.deleteHistory(id);
     }

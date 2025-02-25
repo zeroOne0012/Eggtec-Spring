@@ -1,1 +1,0 @@
-gradlew bootBuildImage && cd docker-compose-gradlew && docker-compose up

@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
+// history DTO
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)  // null 값이면 JSON에서 제외
 public class HistoryDTO {

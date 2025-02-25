@@ -7,6 +7,7 @@ import lombok.Data;
 import java.io.IOException;
 import java.util.List;
 
+// GET apis/history/last 쿼리 결과(ngCount 가공 전)
 @Data
 public class LastDTO {
     private Integer recipeNo;

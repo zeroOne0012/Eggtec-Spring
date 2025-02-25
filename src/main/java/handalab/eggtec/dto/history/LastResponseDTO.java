@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.util.List;
 
+// GET apis/history/last 응답 데이터(ngCount 가공 후)
 @Data
 @AllArgsConstructor
 public class LastResponseDTO {
