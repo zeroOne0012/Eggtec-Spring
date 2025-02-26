@@ -39,3 +39,5 @@ out/
 csv/
 
 .env
+
+logs/
