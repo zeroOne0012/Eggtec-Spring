@@ -42,8 +42,6 @@ public class HistoryService {
 
     // GET /summary
     public List<TotalSummaryDTO> totalSummary() {
-        log.info("TEST");
-        System.out.println("TEST");
         return historyMapper.getTotalSummary();
     }
 
