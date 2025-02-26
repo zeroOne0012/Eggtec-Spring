@@ -247,4 +247,6 @@ ALTER TABLE ONLY public.history
 -- PostgreSQL database dump complete
 --
 
-INSERT INTO setting(title) values('default');
+INSERT INTO public.setting(title) values('default');
+insert into public.recipe(idx, nickname, type, weight, selected) values(1, 'abc', 'White', 'test.net', true);
+insert into public.history(recipe_no, item_no) values(1,1);

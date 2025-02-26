@@ -21,18 +21,18 @@ services:
     depends_on:
       - postgres
     ports:
-      - "8080:8080"
+      - 8080:8080
     volumes:
       - .:/app
-    environment:
-      DB_USERNAME: handalab
-      DB_PASSWORD: handalab
-      DB_URL: jdbc:postgresql://host.docker.internal:5432/eggtec
-    # # docker db
     # environment:
-    #   DB_USERNAME: postgres
-    #   DB_PASSWORD: 1234
-    #   DB_URL: jdbc:postgresql://postgres:5432/eggtec
+    #   DB_USERNAME: handalab
+    #   DB_PASSWORD: handalab
+    #   DB_URL: jdbc:postgresql://host.docker.internal:5432/eggtec
+    # docker db
+    environment:
+      DB_USERNAME: postgres
+      DB_PASSWORD: 1234
+      DB_URL: jdbc:postgresql://postgres:5432/eggtec
 
 volumes:
   postgres_data:

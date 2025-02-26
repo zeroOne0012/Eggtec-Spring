@@ -1,16 +1,5 @@
 package handalab.eggtec.service;
 
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.dataformat.csv.CsvMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvSchema;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import handalab.eggtec.dto.MessageDTO;
-import handalab.eggtec.dto.history.*;
-import handalab.eggtec.mapper.HistoryMapper;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,7 +9,27 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+import handalab.eggtec.dto.MessageDTO;
+import handalab.eggtec.dto.history.CsvDTO;
+import handalab.eggtec.dto.history.CsvFilterDTO;
+import handalab.eggtec.dto.history.HistoryDTO;
+import handalab.eggtec.dto.history.HistoryFilterDTO;
+import handalab.eggtec.dto.history.LastDTO;
+import handalab.eggtec.dto.history.LastResponseDTO;
+import handalab.eggtec.dto.history.SummaryDTO;
+import handalab.eggtec.dto.history.TotalDTO;
+import handalab.eggtec.dto.history.TotalSummaryDTO;
+import handalab.eggtec.mapper.HistoryMapper;
 import static handalab.eggtec.module.Mkdir.mkdir;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
@@ -33,6 +42,8 @@ public class HistoryService {
 
     // GET /summary
     public List<TotalSummaryDTO> totalSummary() {
+        log.info("TEST");
+        System.out.println("TEST");
         return historyMapper.getTotalSummary();
     }
 
@@ -82,7 +93,7 @@ public class HistoryService {
 
     // POST /csv/{id}
     public MessageDTO createCsv(Integer id, CsvFilterDTO info) throws IOException {
-        List<CsvDTO> csvDTO = historyMapper.getCsvData(id, info); // query execution
+        List<CsvDTO> csvDTO = historyMapper.getCsvData(id, info); // query
 
         // mkdir
         String csvPath = info.getPath() + "csv";
@@ -99,14 +110,14 @@ public class HistoryService {
             fileName =  String.join("", s_date) + "_" + String.join("", e_date) + "_recipe" + id;
         }
 
-
         // get unique file name
         File csvFile = getUniqueFilePath(totalPath, fileName);
 
-        // save csv // data: csvDTO, path: csvFile
+        // csv 저장
+        // data: csvDTO, path: csvFile
         try {
             CsvMapper csvMapper = new CsvMapper();
-            csvMapper.registerModule(new JavaTimeModule());
+            csvMapper.registerModule(new JavaTimeModule()); // + time
             CsvSchema schema = csvMapper.schemaFor(CsvDTO.class).withHeader();
             ObjectWriter writer = csvMapper.writer(schema);
 
@@ -117,6 +128,7 @@ public class HistoryService {
             throw new IOException(e);
         }
 
+        // 경로 반환 {csv}\\{filename}
         String separatorRegex = File.separator.equals("\\") ? "\\\\" : File.separator;
         String[] fileNameParts = csvFile.toString().split(separatorRegex);
         return new MessageDTO(fileNameParts[fileNameParts.length - 2] + File.separator + fileNameParts[fileNameParts.length - 1]);
